@@ -1,240 +1,229 @@
 
+enum InterconnectPin
+{
+	ONE, // LED +
+	TWO, // LED -
+	THREE, // NC
+	FOUR, // NC
+	FIVE,
+	SIX,
+	SEVEN,
+	EIGHT,
+	NINE,
+	TEN,
+	ELEVEN,
+	TWELVE,
+	THIRTEEN,
+	FOURTEEN,
+	FIFTEEN,
+	SIXTEEN,
+	SEVENTEEN,
+	EIGHTEEN,
+	NINETEEN,
+	TWENTY,
+	TWENTY_ONE,
+	TWENTY_TWO,
+	TWENTY_THREE,
+	TWENTY_FOUR,
+	TWENTY_FIVE,
+	TWENTY_SIX,
+
+	COUNT,
+};
 
 enum FdimButtonType
 {
-  UNKNOWN_FDIM_BUTTON,
-  HVAC_OFF,
-  RECIRC,
-  AC,
-  AUTO,
-  HAZARD,
-  FRONT_DEMIST,
-  VENTS,
-  REAR_DEMIST,
-  PASSENGER_TEMP_MINUS,
-  PASSENGER_TEMP_PLUS,
-  FAN_MINUS,
-  FAN_PLUS,
-  DRIVER_TEMP_MINUS,
-  DRIVER_TEMP_PLUS,
-  EJECT,
-  SOURCE_CD,
-  SCN_AS,
-  SOURCE_MEDIA,
-  SOURCE_FM_AM,
-  BACK,
-  OK,
-  MENU,
-  AUDIO_POWER,
-  SEEK_LEFT,
-  SEEK_RIGHT,
-  LOCK,
-  UNLOCK,
-  DSC,
-  INTERIOR_LIGHT,
-};
+	HVAC_OFF,
+	RECIRC,
+	AC,
+	AUTO,
+	HAZARD,
+	FRONT_DEMIST,
+	VENTS,
+	REAR_DEMIST,
+	PASS_TEMP_MINUS,
+	PASS_TEMP_PLUS,
+	FAN_MINUS,
+	FAN_PLUS,
+	DRIVER_TEMP_MINUS,
+	DRIVER_TEMP_PLUS,
+	EJECT,
+	SOURCE_CD,
+	SCN_AS,
+	SOURCE_MEDIA,
+	SOURCE_FM_AM,
+	BACK,
+	OK,
+	MENU,
+	AUDIO_POWER,
+	SEEK_LEFT,
+	SEEK_RIGHT,
+	LOCK,
+	UNLOCK,
+	DSC,
+	INTERIOR_LIGHT,
 
-char *FdimButtonNameMap[] =
-    {
-        "UNKNOWN",
-        "HVAC_OFF",
-        "RECIRC",
-        "AC",
-        "AUTO",
-        "HAZARD",
-        "FRONT_DEMIST",
-        "VENTS",
-        "REAR_DEMIST",
-        "PASSENGER_TEMP_MINUS",
-        "PASSENGER_TEMP_PLUS",
-        "FAN_MINUS",
-        "FAN_PLUS",
-        "TEMP_MINUS",
-        "TEMP_PLUS",
-        "EJECT",
-        "SOURCE_CD",
-        "SCN_AS",
-        "SOURCE_MEDIA",
-        "SOURCE_FM_AM",
-        "BACK",
-        "OK",
-        "MENU",
-        "AUDIO_POWER",
-        "SEEK_LEFT",
-        "SEEK_RIGHT",
-        "LOCK",
-        "UNLOCK",
-        "DSC",
-        "INTERIOR_LIGHT"};
+	COUNT
+};
 
 struct FdimButton
 {
-  FdimButtonType buttonType;
-  unsigned signalPin;
-  unsigned groundPin;
-  const char *displayName;
+	FdimButtonType buttonType;
+	InterconnectPin signalPin;
+	InterconnectPin groundPin;
+	const char *displayName;
 };
 
-FdimButton buttons[] = {
-    {FdimButtonType::HVAC_OFF, 11, 16, "Toggle HVAC"},
-	{FdimButtonType::RECIRC, 12, 16, "Recirc/Fresh"},
-	{FdimButtonType::AC, 13, 16, "Toggle Air Conditioning"},
-	{FdimButtonType::AUTO, 14, 16, "Enable Climate Control"},
 
-	{FdimButtonType::FAN_MINUS, 11, 17, "Reduce Fan Speed"},
-	{FdimButtonType::FAN_PLUS, 12, 17, "Increase Fan Speed"},
-
-	{FdimButtonType::VENTS, 11, 18 , "Cycle Vents"},
-	{FdimButtonType::FRONT_DEMIST, 12, 18, "Toggle Windscreen Demister"},
-	{FdimButtonType::DRIVER_TEMP_MINUS, 13, 18, "Reduce Temperature"},
-	{FdimButtonType::DRIVER_TEMP_PLUS, 14, 18, "Increase Temperature"},
-	{FdimButtonType::REAR_DEMIST, 15, 18, "Toggle Rear Demister"},
-
-	{FdimButtonType::DSC, 11, 19, "Toggle Stability Control"},
-	{FdimButtonType::SCN_AS, 12, 19, "Scan Radio"},
-	{FdimButtonType::SOURCE_MEDIA, 13, 19, "Cycle Media Audio Sources"},
-	{FdimButtonType::SOURCE_FM_AM, 14, 19, "Cycle FM, AM Audio Sources"},
-	{FdimButtonType::BACK, 16, 19, "Back"},
-
-	{FdimButtonType::SOURCE_CD, 11, 20, "Select CD Audio Source"},
-	{FdimButtonType::OK, 12, 20, "OK"},
-	{FdimButtonType::MENU, 13, 20, "Menu"},
-	{FdimButtonType::SEEK_LEFT, 14, 20, "Seek Lower"},
-	{FdimButtonType::SEEK_RIGHT, 15, 20, "Seek Higher"},
-
-	{FdimButtonType::HAZARD, 5, 22, "Toggle Hazard Lights"},
-	{FdimButtonType::AUDIO_POWER, 6, 22, "Toggle Audio Power"},
-	{FdimButtonType::EJECT, 7, 22, "Eject CD"},
-	{FdimButtonType::LOCK, 9, 22, "Lock Car Doors"},
-	{FdimButtonType::UNLOCK, 9, 22, "Unlock Car Doors"},
-	{FdimButtonType::INTERIOR_LIGHT, 12, 22, "Toggle Cabin Light"},
-};
-
-enum ConnectorPinMapIndex
+struct FdimRotaryEncoder
 {
-  // ONE, LED +
-  // TWO, LED -
-  // THREE, NC
-  // FOUR, NC
-  FIVE = 21,
-  SIX = 20,
-  SEVEN = 23,
-  EIGHT = 22,
-  NINE = 25,
-  TEN = 24,
-  ELEVEN = 27,
-  TWELVE = 26,
-  THIRTEEN = 29,
-  FOURTEEN = 28,
-  FIFTEEN = 31,
-  SIXTEEN = 30,
-  SEVENTEEN = 33,
-  EIGHTEEN = 32,
-  NINETEEN = 35,
-  TWENTY = 34,
-  TWENTY_ONE = 37,
-  TWENTY_TWO = 36,
-  TWENTY_THREE = 39,
-  TWENTY_FOUR = 38,
-  TWENTY_FIVE = 41,
-  TWENTY_SIX = 40,
+	InterconnectPin signalPinA;
+	InterconnectPin signalPinC;
+	InterconnectPin groundPinB;
+	const char *displayName;
 };
 
-unsigned allPins[] =
-    {
-        // ConnectorPinMapIndex::FIVE,
-        // ConnectorPinMapIndex::SIX,
-        // ConnectorPinMapIndex::SEVEN,
-        // ConnectorPinMapIndex::EIGHT,
-        // ConnectorPinMapIndex::NINE,
-        // ConnectorPinMapIndex::TEN,
-        // ConnectorPinMapIndex::ELEVEN,
-        // ConnectorPinMapIndex::TWELVE,
-        // ConnectorPinMapIndex::THIRTEEN,
-        // ConnectorPinMapIndex::FOURTEEN,
-        // ConnectorPinMapIndex::FIFTEEN,
-        // ConnectorPinMapIndex::SIXTEEN,
-        // ConnectorPinMapIndex::SEVENTEEN,
-        // ConnectorPinMapIndex::EIGHTEEN,
-        // ConnectorPinMapIndex::NINETEEN,
-        ConnectorPinMapIndex::TWENTY,
-        ConnectorPinMapIndex::TWENTY_ONE,
-       ConnectorPinMapIndex::TWENTY_TWO,
-      ConnectorPinMapIndex::TWENTY_THREE,
-       ConnectorPinMapIndex::TWENTY_FOUR,
-        ConnectorPinMapIndex::TWENTY_FIVE,
-        ConnectorPinMapIndex::TWENTY_SIX,
-};
-
-const unsigned allPinCount = sizeof(allPins) / sizeof(unsigned);
-
-const char *pinNames[] =
-    {
-        // "FIVE",
-        // "SIX",
-        // "SEVEN",
-        // "EIGHT",
-        // "NINE",
-        // "TEN",
-        // "ELEVEN",
-        // "TWELVE",
-        // "THIRTEEN",
-        // "FOURTEEN",
-        // "FIFTEEN",
-        // "SIXTEEN",
-        // "SEVENTEEN",
-        // "EIGHTEEN",
-        // "NINETEEN",
-        "TWENTY",
-        "TWENTY_ONE",
-        "TWENTY_TWO",
-       "TWENTY_THREE",
-       "TWENTY_FOUR",
-        "TWENTY_FIVE",
-        "TWENTY_SIX",
-};
-
-enum PinStatus
+struct FdimTempSensor
 {
-  UNKNOWN = 0,
-  ON = 1,
-  OFF = 2,
+	InterconnectPin sensePin;
+	InterconnectPin groundPin;
+	const char *displayName;
 };
 
-PinStatus lastState[allPinCount][allPinCount] = {};
-PinStatus currentState[allPinCount][allPinCount] = {};
+const char * InterconnectPinDisplayNameMap[InterconnectPin::COUNT] = {
 
-int currentPinIndex = 0;
+	"LED+", // LED +
+	"LED-", // LED -
+	"NC", // NC
+	"NC", // NC
+	"FIVE",
+	"SIX",
+	"SEVEN",
+	"EIGHT",
+	"NINE",
+	"TEN",
+	"ELEVEN",
+	"TWELVE",
+	"THIRTEEN",
+	"FOURTEEN",
+	"FIFTEEN",
+	"SIXTEEN",
+	"SEVENTEEN",
+	"EIGHTEEN",
+	"NINETEEN",
+	"TWENTY",
+	"TWENTY_ONE",
+	"TWENTY_TWO",
+	"TWENTY_THREE",
+	"TWENTY_FOUR",
+	"TWENTY_FIVE",
+	"TWENTY_SIX",
+}
 
 
-#define PIN_HIGHBIT ConnectorPinMapIndex::TWENTY_THREE
-#define PIN_LOWBIT ConnectorPinMapIndex::TWENTY_TWO
+const FdimButton buttons[FdimButtonType::COUNT] = {
+	{ FdimButtonType::HVAC_OFF, 		InterconnectPin::ELEVEN, 	InterconnectPin::SIXTEEN, "Toggle HVAC"},
+	{ FdimButtonType::RECIRC, 			InterconnectPin::TWELVE, 	InterconnectPin::SIXTEEN, "Recirc/Fresh"},
+	{ FdimButtonType::AC, 				InterconnectPin::THIRTEEN, 	InterconnectPin::SIXTEEN, "Toggle Air Conditioning"},
+	{ FdimButtonType::AUTO, 			InterconnectPin::FOURTEEN, 	InterconnectPin::SIXTEEN, "Enable Climate Control"},
+
+	{ FdimButtonType::FAN_MINUS, 		InterconnectPin::ELEVEN, 	InterconnectPin::SEVENTEEN, "Reduce Fan Speed"},
+	{ FdimButtonType::FAN_PLUS, 		InterconnectPin::TWELVE, 	InterconnectPin::SEVENTEEN, "Increase Fan Speed"},
+	{ FdimButtonType::PASS_TEMP_PLUS, 	InterconnectPin::THIRTEEN, 	InterconnectPin::SEVENTEEN, "Increase Passenger Temp"},
+	{ FdimButtonType::PASS_TEMP_MINUS, 	InterconnectPin::FOURTEEN, 	InterconnectPin::SEVENTEEN, "Reduce Passenger Temp"},
+
+	{ FdimButtonType::VENTS,			InterconnectPin::ELEVEN, 	InterconnectPin::EIGHTEEN , "Cycle Vents"},
+	{ FdimButtonType::FRONT_DEMIST,		InterconnectPin::TWELVE, 	InterconnectPin::EIGHTEEN, "Toggle Windscreen Demister"},
+	{ FdimButtonType::DRIVER_TEMP_MINUS,InterconnectPin::THIRTEEN, 	InterconnectPin::EIGHTEEN, "Reduce Temperature"},
+	{ FdimButtonType::DRIVER_TEMP_PLUS,	InterconnectPin::FOURTEEN, 	InterconnectPin::EIGHTEEN, "Increase Temperature"},
+	{ FdimButtonType::REAR_DEMIST,		InterconnectPin::FIFTEEN, 	InterconnectPin::EIGHTEEN, "Toggle Rear Demister"},
+
+	{ FdimButtonType::DSC,				InterconnectPin::ELEVEN, 	InterconnectPin::NINETEEN, "Toggle Stability Control"},
+	{ FdimButtonType::SCN_AS,			InterconnectPin::TWELVE, 	InterconnectPin::NINETEEN, "Scan Radio"},
+	{ FdimButtonType::SOURCE_MEDIA,		InterconnectPin::THIRTEEN, 	InterconnectPin::NINETEEN, "Cycle Media Audio Sources"},
+	{ FdimButtonType::SOURCE_FM_AM,		InterconnectPin::FOURTEEN, 	InterconnectPin::NINETEEN, "Cycle FM, AM Audio Sources"},
+	{ FdimButtonType::BACK,				InterconnectPin::SIXTEEN, 	InterconnectPin::NINETEEN, "Back"},
+
+	{ FdimButtonType::SOURCE_CD,		InterconnectPin::ELEVEN, 	InterconnectPin::TWENTY, "Select CD Audio Source"},
+	{ FdimButtonType::OK,			 	InterconnectPin::TWELVE, 	InterconnectPin::TWENTY, "OK"},
+	{ FdimButtonType::MENU,			 	InterconnectPin::THIRTEEN, 	InterconnectPin::TWENTY, "Menu"},
+	{ FdimButtonType::SEEK_LEFT,		InterconnectPin::FOURTEEN, 	InterconnectPin::TWENTY, "Seek Lower"},
+	{ FdimButtonType::SEEK_RIGHT,		InterconnectPin::FIFTEEN, 	InterconnectPin::TWENTY, "Seek Higher"},
+
+	{ FdimButtonType::HAZARD,       	InterconnectPin::FIVE, 		InterconnectPin::TWENTY_TWO, "Toggle Hazard Lights"},
+	{ FdimButtonType::AUDIO_POWER,  	InterconnectPin::SIX, 		InterconnectPin::TWENTY_TWO, "Toggle Audio Power"},
+	{ FdimButtonType::EJECT,        	InterconnectPin::SEVEN, 	InterconnectPin::TWENTY_TWO, "Eject CD"},
+	{ FdimButtonType::LOCK,       		InterconnectPin::EIGHT, 	InterconnectPin::TWENTY_TWO, "Lock Car Doors"},
+	{ FdimButtonType::UNLOCK,       	InterconnectPin::NINE, 		InterconnectPin::TWENTY_TWO, "Unlock Car Doors"},
+	{ FdimButtonType::INTERIOR_LIGHT,   InterconnectPin::TWELVE, 	InterconnectPin::TWENTY_TWO, "Toggle Cabin Light"},
+};
+
+
+const FdimRotaryEncoder encoder = {
+	InterconnectPin::TWENTY_TWO,
+	InterconnectPin::TWENTY_THREE,
+	InterconnectPin::TWENTY_SIX,
+	"Volume Control"
+};
+
+const FdimTempSensor tempSensor = {
+	InterconnectPin::TWENTY_FIVE,
+	InterconnectPin::TWENTY_FOUR,
+	"Cabin Temp Sensor"
+};
+
+
+enum DigitalPinStatus
+{
+	UNKNOWN = 0,
+	ON = 1,
+	OFF = 2,
+};
+
+
+DigitalPinStatus lastButtonState[FdimButtonType::COUNT] = {};
+DigitalPinStatus currentButtonState[FdimButtonType::COUNT] = {};
+
+struct InterconnectPinMap
+{
+	InterconnectPin connectorPin;
+	unsigned mcuPin;
+};
+
+
+const InterconnectPinMap pinMap[InterconnectPin::COUNT] = {
+	{ .connectorPin = InterconnectPin::EIGHT, .mcuPin = 2 },
+	{ InterconnectPin::EIGHT, 3 },
+};
+
 
 void setup()
 {
 
-  // initialize serial communication at 9600 bits per second:
-  Serial.begin(115200);
+	// initialize serial communication at 9600 bits per second:
+	Serial.begin(115200);
 
-  for (unsigned i = 0; i < allPinCount; i++)
-  {
-    auto pin = allPins[i];
-    // Make all pins 5V
-    pinMode(pin, INPUT_PULLUP);
+	for (unsigned i = 0; i < FdimButtonType::COUNT; i++)
+	{
+		auto fdimButton = buttons[i];
+		auto pin = pinMap[fdimButton.signalPin];
+		// Make all pins 5V
+		pinMode(pin, INPUT_PULLUP);
 
-    Serial.print("Configure Pin ");
-    Serial.print(pin);
-    Serial.print(" as connected to pin ");
+		Serial.print("Configure Pin ");
+		Serial.print(InterconnectPinDisplayNameMap[fdimButton.signalPin]);
+		Serial.print(" as connected to pin ");
 
-    Serial.print(pinNames[i]);
-    Serial.print(".\n");
-  }
+		Serial.print(InterconnectPinDisplayNameMap[fdimButton.groundPin]);
+		Serial.print(".\n");
+	}
 
 
-  pinMode(PIN_HIGHBIT, INPUT);
-  pinMode(PIN_LOWBIT, INPUT);
-  digitalWrite(PIN_LOWBIT, HIGH);
-  digitalWrite(PIN_HIGHBIT, HIGH);
+	pinMode(pinMap[encoder.signalPinA], INPUT);
+	pinMode(pinMap[encoder.signalPinC], INPUT);
+
+	digitalWrite(pinMap[encoder.signalPinA], HIGH);
+	digitalWrite(pinMap[encoder.signalPinC], HIGH);
 
 
 }
@@ -250,7 +239,7 @@ int state, prevState = 0, count = 0;
  * 2 0 -
  * 3 2 -
  */
-int encoderStates[4][4] = {
+const int encoderStates[4][4] = {
  {  0, -1,  1,  0 }, 
  {  1,  0,  0, -1 }, 
  { -1,  0,  0,  1 }, 
@@ -259,66 +248,72 @@ int encoderStates[4][4] = {
 
 void loop()
 {
-  state = (digitalRead(PIN_HIGHBIT) << 1) | digitalRead(PIN_LOWBIT);
-  count += encoderStates[prevState][state];
-    if (state != prevState) {
-    Serial.print(state, DEC);
-    Serial.print(' ');
-    Serial.print(prevState, DEC);
-    Serial.print(' ');
-    Serial.println(count, DEC);
-  }
+	const auto lowBitPin = pinMap[encoder.signalPinA];
+	const auto highBitPin = pinMap[encoder.signalPinC];
 
-  for (int i = 0; i < allPinCount; i++)
-  {
-    auto pinA = allPins[i];
-    pinMode(pinA, OUTPUT);
-    digitalWrite(pinA, 0);
-    for (int j = 0; j < allPinCount; j++)
-    {
-      auto pinB = allPins[j];
-      if (pinA == pinB)
-      {
-        continue;
-      }
-      // if the output pin is not the same pin being read and there is a connection
-      if (!digitalRead(pinB))
-      {
+	state = (digitalRead(highBitPin) << 1) | digitalRead(lowBitPin);
 
-        currentState[j][i] = PinStatus::ON;
-      }
-      else
-      {
-        currentState[j][i] = PinStatus::OFF;
-      }
-    }
-    // set pin back to input before moving on to the next pin
-    pinMode(pinA, INPUT_PULLUP);
-  }
+	count += encoderStates[prevState][state];
+	if (state != prevState) 
+	{
+		Serial.print(state, DEC);
+		Serial.print(' ');
+		Serial.print(prevState, DEC);
+		Serial.print(' ');
+		Serial.println(count, DEC);
+	}
 
-  auto hasChanges = false;
+	for (int i = 0; i < FdimButtonType::COUNT; i++)
+	{
+		const auto 
+		auto pinA = allPins[i];
+		pinMode(pinA, OUTPUT);
+		digitalWrite(pinA, 0);
+		for (int j = 0; j < allPinCount; j++)
+		{
+			auto pinB = allPins[j];
+			if (pinA == pinB)
+			{
+				continue;
+			}
+			// if the output pin is not the same pin being read and there is a connection
+			if (!digitalRead(pinB))
+			{
 
-  for (int i = 0; i < allPinCount && !hasChanges; i++)
-  {
-    for (int j = 0; j < allPinCount; j++)
-    {
-      if (j == i)
-      {
-        continue;
-      }
-      auto lastValue = lastState[j][i];
-      auto currentValue = currentState[j][i];
+				currentState[j][i] = PinStatus::ON;
+			}
+			else
+			{
+				currentState[j][i] = PinStatus::OFF;
+			}
+		}
+		// set pin back to input before moving on to the next pin
+		pinMode(pinA, INPUT_PULLUP);
+	}
 
-      if (lastValue != currentValue)
-      {
-        hasChanges = true;
+	auto hasChanges = false;
+
+	for (int i = 0; i < allPinCount && !hasChanges; i++)
+	{
+		for (int j = 0; j < allPinCount; j++)
+		{
+			if (j == i)
+			{
+				continue;
+			}
+			auto lastValue = lastState[j][i];
+			auto currentValue = currentState[j][i];
+
+			if (lastValue != currentValue)
+			{
+				hasChanges = true;
 		break;
-      }
-    }
-  }
+			}
+		}
+	}
 
-  if (hasChanges)
-  {
+	if (hasChanges)
+	{
 		Serial.println();
 
 
@@ -354,61 +349,61 @@ void loop()
 // 	Serial.println();
 //   }
 
-    memcpy(lastState, currentState, sizeof(lastState));
-  }
+		memcpy(lastButtonState, currentButtonState, sizeof(lastState));
+	}
 
-  // for( unsigned groundPinIndex = 0; groundPinIndex < allPinCount && !hasChanges; groundPinIndex++ )
-  // {
-  // 	auto groundPin = allPins[groundPinIndex];
+	// for( unsigned groundPinIndex = 0; groundPinIndex < allPinCount && !hasChanges; groundPinIndex++ )
+	// {
+	// 	auto groundPin = allPins[groundPinIndex];
 
-  // 	for ( auto signalPinIndex = 0; signalPinIndex < allPinCount; signalPinIndex++ )
-  // 	{
-  // 		auto lastValue = lastState[signalPinIndex][groundPinIndex];
-  // 		auto currentValue = currentState[signalPinIndex][groundPinIndex];
-  // 	}
-  // }
+	// 	for ( auto signalPinIndex = 0; signalPinIndex < allPinCount; signalPinIndex++ )
+	// 	{
+	// 		auto lastValue = lastState[signalPinIndex][groundPinIndex];
+	// 		auto currentValue = currentState[signalPinIndex][groundPinIndex];
+	// 	}
+	// }
 
-  // Serial.print("   ");
-  // for ( auto signalPinIndex = 0; signalPinIndex < allPinCount; signalPinIndex++ )
-  // {
-  // 	auto connectorPin = signalPinIndex + 5;
-  // 	if(signalPinIndex < 10) {
-  // 		Serial.print(" ");
-  // 	}
-  // 	Serial.print(connectorPin);
-  // 	Serial.print(" ");
+	// Serial.print("   ");
+	// for ( auto signalPinIndex = 0; signalPinIndex < allPinCount; signalPinIndex++ )
+	// {
+	// 	auto connectorPin = signalPinIndex + 5;
+	// 	if(signalPinIndex < 10) {
+	// 		Serial.print(" ");
+	// 	}
+	// 	Serial.print(connectorPin);
+	// 	Serial.print(" ");
 
-  // }
-  // Serial.print("\n");
+	// }
+	// Serial.print("\n");
 
-  // for( unsigned groundPinIndex = 0; groundPinIndex < allPinCount; groundPinIndex++ )
-  // {
+	// for( unsigned groundPinIndex = 0; groundPinIndex < allPinCount; groundPinIndex++ )
+	// {
 
-  // 	auto connectorPin = groundPinIndex + 5;
-  // 	if(groundPinIndex < 10) {
-  // 		Serial.print(" ");
-  // 	}
-  // 	Serial.print(connectorPin);
-  // 	Serial.print(" ");
+	// 	auto connectorPin = groundPinIndex + 5;
+	// 	if(groundPinIndex < 10) {
+	// 		Serial.print(" ");
+	// 	}
+	// 	Serial.print(connectorPin);
+	// 	Serial.print(" ");
 
-  // 	for ( auto signalPinIndex = 0; signalPinIndex < allPinCount; signalPinIndex++ )
-  // 	{
-  // 		auto lastValue = lastState[signalPinIndex][groundPinIndex];
-  // 		auto currentValue = currentState[signalPinIndex][groundPinIndex];
-  // 			Serial.print(" ");
-  // 		if (currentValue == PinStatus::OFF) {
-  // 			Serial.print("+");
-  // 		}
-  // 		 else if (currentValue == PinStatus::ON)
-  // 		 {
-  // 			Serial.print("-");
-  // 		} else {
-  // 			Serial.print(" ");
-  // 		}
-  // 			Serial.print(" ");
-  // 	}
-  // 	Serial.print("\n");
-  // }
+	// 	for ( auto signalPinIndex = 0; signalPinIndex < allPinCount; signalPinIndex++ )
+	// 	{
+	// 		auto lastValue = lastState[signalPinIndex][groundPinIndex];
+	// 		auto currentValue = currentState[signalPinIndex][groundPinIndex];
+	// 			Serial.print(" ");
+	// 		if (currentValue == PinStatus::OFF) {
+	// 			Serial.print("+");
+	// 		}
+	// 		 else if (currentValue == PinStatus::ON)
+	// 		 {
+	// 			Serial.print("-");
+	// 		} else {
+	// 			Serial.print(" ");
+	// 		}
+	// 			Serial.print(" ");
+	// 	}
+	// 	Serial.print("\n");
+	// }
 
-  // }
+	// }
 }
