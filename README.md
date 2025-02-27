@@ -17,11 +17,11 @@ I suspect some form of custom moulded TE Multilock connector with 51 pins
 
 ## Antenna to ACM
 
-**Socket:** Unsure
+**Socket:** Hirose GT21-1S-HU
 
-**Header:** Hi-Rose GT21-1S-HU
+**Header:** Hirose GT21-1P-DS
 
-Single position 2 wire shielded coax
+Single position 2 wire shielded coax (specifically designed for antennas)
 
 ## MCN to Front Display Module (FDM)
 
@@ -47,11 +47,11 @@ Runs the (MS) CAN to the ACM. The ACM internally bridges the CAN H and CAN L wir
 50 Position Molex Connector
 
 
-## FDM internal daughterboard to Interior Comand Center (ICC) keypad:**
+## FDM internal daughterboard to Interior Comand Center (ICC) keypad:
 
-**Socket:** Hi-Rose DF11-26DS-2C
+**Socket:** Hirose DF11-26DS-2C
 
-**Header:** Hi-Rose DF11-26P-2DSA
+**Header:** Hirose DF11-26P-2DSA
 
 2x13 26 position Hi-Rose connector
 
@@ -146,7 +146,7 @@ EBM PABST S2000 with external surface mount 10K NTC
 
 
 ## Engine Water Temp
-0x44D, (D7 - 40) (seems to be in °C)
+0x44D, (D7 - 40) (seems to be in Â°C)
 
 ## Battery Voltage
 0x307, D5 Maybe???? 
