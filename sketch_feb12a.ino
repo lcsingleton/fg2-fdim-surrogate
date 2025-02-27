@@ -113,11 +113,11 @@ const char * InterconnectPinDisplayNameMap[InterconnectPin::COUNT] = {
 	"NINETEEN",
 	"TWENTY",
 	"TWENTY_ONE",
-	"TWENTY_TWO",
-	"TWENTY_THREE",
-	"TWENTY_FOUR",
-	"TWENTY_FIVE",
-	"TWENTY_SIX",
+	"ROTARY_ENCODER_A",
+	"ROTARY_ENCODER_C",
+	"TEMP_SENSE",
+	"GROUND",
+	"ROTARY_ENCODER_B",
 }
 
 
@@ -129,6 +129,8 @@ const FdimButton buttons[FdimButtonType::COUNT] = {
 
 	{ FdimButtonType::FAN_MINUS, 		InterconnectPin::ELEVEN, 	InterconnectPin::SEVENTEEN, "Reduce Fan Speed"},
 	{ FdimButtonType::FAN_PLUS, 		InterconnectPin::TWELVE, 	InterconnectPin::SEVENTEEN, "Increase Fan Speed"},
+
+	// This is conjecture - I don't have a DZ Climate Control ICC
 	{ FdimButtonType::PASS_TEMP_PLUS, 	InterconnectPin::THIRTEEN, 	InterconnectPin::SEVENTEEN, "Increase Passenger Temp"},
 	{ FdimButtonType::PASS_TEMP_MINUS, 	InterconnectPin::FOURTEEN, 	InterconnectPin::SEVENTEEN, "Reduce Passenger Temp"},
 

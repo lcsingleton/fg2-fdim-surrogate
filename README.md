@@ -125,9 +125,31 @@ EBM PABST S2000 with external surface mount 10K NTC
 	- Back
 
 # MS Can Messages Decodes
-- Speed
-- Boost
-- Internal Temp
-- Dash Key Status
-- Reverse Sensors
-- RPM
+## Speed
+0x330 ((D6 * 2) + (D7 / 255))
+
+## RPM
+0x330 (D1 * 100) + D2
+
+## Boost
+0x120, D7
+
+## Internal Temp
+
+## ICC Key Status
+
+## Reverse Sensors
+
+## Lateral and Longitudinal G forces
+0x397, (D5 * x + D6 ) Long or lat
+0x397, (D7 * x + D8 ) Long or lat
+
+
+## Engine Water Temp
+0x44D, (D7 - 40) (seems to be in °C)
+
+## Battery Voltage
+0x307, D5 Maybe???? 
+
+Others?
+0x128 D5 is some kind of timer? possible speed related timer? i.e. trip computer, distance traveled or something?
