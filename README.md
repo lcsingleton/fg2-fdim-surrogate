@@ -1,4 +1,5 @@
 # Connectors
+
 **Loom to Antenna:**
 Socket: Unsure
 Header: Hi-Rose GT21-1S-HU
@@ -8,10 +9,11 @@ Custom Moulding
 This is a custom connector used in the BA, BF, FG, and FG Mk II Falcons.
 I suspect some form of custom moulded TE Multilock connector with 51 pins
 
-|| Layout	|| Positions	|| Contact Width	|| Pitch	||
-| 4 x 3		| 12			| 2.2mm				| ??		|
-| 5 x 3		| 15			| 1.0mm				| ??		|
-| 8 x 3		| 24			| 1.0mm				| ??		|
+| Layout | Positions | Contact Width | Pitch |
+|--------|-----------|---------------|-------|
+| 4 x 3  | 12        | 2.2mm         | ??    |
+| 5 x 3	 | 15        | 1.0mm         | ??    |
+| 8 x 3	 | 24        | 1.0mm         | ??    |
 
 
 **Loom to FDIM:**
@@ -20,8 +22,9 @@ Header: MX84B024NF1
 
 2x12 24 Position JAE Connector
 
-|| Layout	|| Positions	|| Contact Width	|| Pitch	||
-| 12 x 2	| 24			| 1.0mm				| 2.2mm		|
+| Layout | Positions | Contact Width | Pitch |
+|--------|-----------|---------------|-------|
+| 12 x 2 | 24        | 1.0mm         | 2.2mm |
 
 
 Runs the (MS) CAN to the ACM. The ACM internally bridges the CAN H and CAN L wires into the body loom.
@@ -40,14 +43,79 @@ Header: Hi-Rose DF11-26P-2DSA
 
 2x13 26 position
 
-|| Layout	|| Positions	|| Contact Width	|| Pitch	||
-| 13 x 2	| 26			| ??				| 2.0mm		|
+
+| Layout | Positions | Contact Width | Pitch |
+|--------|-----------|---------------|-------|
+| 13 x 2 | 26        |               | 2.0mm |
 
 Rotary Encoder:
 Alpine EC21A or EC35A
-
 Cabin Temp Sensor:
 EBM PABST S2000 with external 10K NTC
 
 
-# Can PIDs Required by Instrument Cluster
+# MS CAN PIDs Required by Instrument Cluster
+
+
+# Features
+## Safety
+Hazzard Lights
+Front Demister
+Rear Demist
+Lock
+Unlock
+Interior Lighting (including dimming)
+DSC
+
+
+## Comfort and Convenience - Single Zone (SZ)
+Internal Temp
+HVAC Off
+Temp
+A/C
+Fan Speed
+Recirculate/Fresh
+Vents
+Reverse Camera
+Reverse Sensors (including trailer attachment detection)
+
+## Entertainment
+External Temp
+Bluetooth Audio
+Aux In
+USB
+DAB+
+RDS
+AM Radio
+FM Radio
+CD (No longer usable)
+Volume Dial
+Bluetooth Phone
+
+## Operational
+OEM Menu:
+- Follow me home lighting
+
+
+GPS Navigation
+
+
+Steerting Wheel Controls
+- Mode
+- Vol Up
+- Phone
+- Vol Down
+
+
+Dash Controls
+- Menu
+- Back
+
+
+# MS Can Messages Decodes
+Speed
+Boost
+Internal Temp
+Dash Key Status
+Reverse Sensors
+RPM
