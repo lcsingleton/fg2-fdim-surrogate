@@ -9,17 +9,17 @@ This is a custom connector used in the BA, BF, FG, and FG Mk II Falcons.
 
 I suspect some form of custom moulded TE Multilock connector with 51 pins
 
-| Layout | Positions | Contact Width | Pitch |
-|--------|-----------|---------------|-------|
-| 4 x 3  | 12        | 2.2mm         | ??    |
-| 5 x 3	 | 15        | 1.0mm         | ??    |
-| 8 x 3	 | 24        | 1.0mm         | ??    |
+| Layout | Positions | Contact Width | Pitch       |
+|--------|-----------|---------------|-------------|
+| 4 x 3  | 12        | 2.2mm         | 3mm x 5mm   |
+| 5 x 3	 | 15        | 1.0mm         | 2.2mm x 5mm |
+| 8 x 3	 | 24        | 1.0mm         | 2.2mm x 5mm |
 
 ## Antenna to ACM
 
-**Socket:** Unsure
+**Socket:** Hirose GTS13-1S-HU
 
-**Header:** Hi-Rose GT21-1S-HU
+**Header:** Hirose GT13SHA-1PP-DS
 
 Single position 2 wire shielded coax
 
@@ -47,7 +47,7 @@ Runs the (MS) CAN to the ACM. The ACM internally bridges the CAN H and CAN L wir
 50 Position Molex Connector
 
 
-## FDM internal daughterboard to Interior Comand Center (ICC) keypad:**
+## FDM internal daughterboard to Interior Comand Center (ICC) keypad:
 
 **Socket:** Hi-Rose DF11-26DS-2C
 
@@ -83,7 +83,6 @@ EBM PABST S2000 with external surface mount 10K NTC
 - Unlock
 - Interior Lighting (including dimming)
 - DSC
-
 
 ## Comfort and Convenience - Single Zone (SZ)
 
@@ -125,6 +124,7 @@ EBM PABST S2000 with external surface mount 10K NTC
 	- Back
 
 # MS Can Messages Decodes
+
 ## Speed
 0x330 ((D6 * 2) + (D7 / 255))
 
