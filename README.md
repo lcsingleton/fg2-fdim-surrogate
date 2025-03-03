@@ -40,6 +40,13 @@ Runs the (MS) CAN to the ACM. The ACM internally bridges the CAN H and CAN L wir
 
 2 pins unpopulated, wires are connected in like-for-like wiring and header ends. They are not wired straight through.
 
+## FDM to USB:
+
+**Connector:** Hirose GT17HN-4DS-2C(A)
+**Header:** Hirose GT17HNF-4DP-2DS(A)
+
+4 Position Hirose Connector
+
 ## FDM to internal daughterboard:
 
 **Receptacle/Connector:** Molex 716617050
@@ -138,6 +145,9 @@ EBM PABST S2000 with external surface mount 10K NTC
 
 ## ICC Key Status
 
+## Steering Wheel Keys
+0x2F2 
+
 ## Reverse Sensors
 
 ## Lateral and Longitudinal G forces
@@ -148,8 +158,13 @@ EBM PABST S2000 with external surface mount 10K NTC
 ## Engine Water Temp
 0x44D, (D7 - 40) (seems to be in °C)
 
+## Questions
+0x403, D4 and D5 Maybe steering angle sensor (until ign off, then 255) 
+0x403 
+
 ## Battery Voltage
-0x307, D5 Maybe???? 
+Not sure
+
 
 Others?
 0x128 D5 is some kind of timer? possible speed related timer? i.e. trip computer, distance traveled or something?
