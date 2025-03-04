@@ -442,16 +442,15 @@ ff = no temp
 0X2FC Media Controls
 
 
-00 00 01 00 00 20 00 08 =  BASE STATE
+00 00 01 00 00 20 00 08 =  HEAD UNIT OFF STATE
 
-00 00 81 00 00 20 00 08 =  EJECT 
+00 00 81 00 00 20 00 08 =  EJECT
 00 00 01 00 00 A0 00 08 =  ROTARY CCW
 00 00 01 00 00 60 00 08 =  ROTARY CW
 00 00 01 00 00 20 00 08 =  CD
 80 00 01 00 00 20 00 08 =  FMAM
 00 40 01 00 00 20 00 08 =  < SEEK
 00 80 01 00 00 20 00 08 =  SEEK >
-
 
 
 00 00 01 00 00 20 00 08 =  SCAN SOMETHING ELSE
@@ -467,7 +466,7 @@ FDIM sends
 0x313
 0x315
 0x425
-055c
+0x55c
 
 
 Instrucment cluster needs:
@@ -486,11 +485,11 @@ max 13ms between messages
 
 
 0X2F2 Head unit status
-37 + 36 mode
-36 seek
-37 vol up
-36 vol down
-36 + 38 = phone
+37 + 36 Mode
+36 Seek
+37 Vol Up
+36 Vol Down
+36 + 38 = Phone
 
 
 */
