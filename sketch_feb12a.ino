@@ -1,4 +1,6 @@
 
+#include <CAN.h>
+
 enum InterconnectPin
 {
 	ONE, // LED +
@@ -71,7 +73,7 @@ struct FdimButton
 	FdimButtonType buttonType;
 	InterconnectPin signalPin;
 	InterconnectPin groundPin;
-	const char *displayName;
+	const char* displayName;
 };
 
 
@@ -80,17 +82,17 @@ struct FdimRotaryEncoder
 	InterconnectPin signalPinA;
 	InterconnectPin signalPinC;
 	InterconnectPin groundPinB;
-	const char *displayName;
+	const char* displayName;
 };
 
 struct FdimTempSensor
 {
 	InterconnectPin sensePin;
 	InterconnectPin groundPin;
-	const char *displayName;
+	const char* displayName;
 };
 
-const char * InterconnectPinDisplayNameMap[InterconnectPin::COUNT] = {
+const char* InterconnectPinDisplayNameMap[InterconnectPin::COUNT] = {
 
 	"LED+", // LED +
 	"LED-", // LED -
@@ -175,16 +177,21 @@ const FdimTempSensor tempSensor = {
 };
 
 
-enum DigitalPinStatus
+enum FdimButtonStatus
 {
 	UNKNOWN = 0,
 	ON = 1,
 	OFF = 2,
 };
 
+// ---------------------------------------
+// Current System Status Variables
+// ---------------------------------------
+FdimButtonStatus lastButtonStatus[FdimButtonType::COUNT] = {};
+FdimButtonStatus currentButtonStatus[FdimButtonType::COUNT] = {};
 
-DigitalPinStatus lastButtonState[FdimButtonType::COUNT] = {};
-DigitalPinStatus currentButtonState[FdimButtonType::COUNT] = {};
+
+
 
 struct InterconnectPinMap
 {
@@ -193,82 +200,111 @@ struct InterconnectPinMap
 };
 
 
+const unsigned PIN_NOT_SET = 0XFF;
+
 const InterconnectPinMap pinMap[InterconnectPin::COUNT] = {
-	{ .connectorPin = InterconnectPin::EIGHT, .mcuPin = 2 },
-	{ InterconnectPin::EIGHT, 3 },
+	// TODO: Fill this out when the header is completed
+	{.connectorPin = InterconnectPin::ONE, .mcuPin = PIN_NOT_SET },  // LED +
+	{.connectorPin = InterconnectPin::TWO, .mcuPin = PIN_NOT_SET },  // LED -
+	{.connectorPin = InterconnectPin::THREE, .mcuPin = PIN_NOT_SET },  // NC
+	{.connectorPin = InterconnectPin::FOUR, .mcuPin = PIN_NOT_SET },  // NC
+	{.connectorPin = InterconnectPin::FIVE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::SIX, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::SEVEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::EIGHT, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::NINE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::TEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::ELEVEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::TWELVE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::THIRTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::FOURTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::FIFTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::SIXTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::SEVENTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::EIGHTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::NINETEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::TWENTY, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::TWENTY_ONE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::TWENTY_TWO, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::TWENTY_THREE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::TWENTY_FOUR, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::TWENTY_FIVE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::TWENTY_SIX, .mcuPin = PIN_NOT_SET },
 };
 
 
-void setup()
+bool withPin(const InterconnectPin iPin, void (*callback)(unsigned))
 {
+	if (!iPin || iPin >= InterconnectPin::COUNT)
+	{
+		return false;
+	}
+	auto mcuPin = pinMap[iPin];
+	if (mcuPin == PIN_NOT_SET)
+	{
+		return false;
+	}
+	callback(mcuPin);
+}
 
-	// initialize serial communication at 9600 bits per second:
-	Serial.begin(115200);
+
+void setupSensorPins()
+{
+	withPin(tempSensor.sensePin, [](auto mcuPin) { pinMode(mcuPin, ANALOG_INPUT); });
+	
+	auto setPinAsInput = [](auto mcuPin) { pinMode(mcuPin, INPUT); };
+	
+	withPin(encoder.signalPinA, setPinAsInput);
+	withPin(encoder.signalPinC, setPinAsInput);
+
+	auto writeHigh = [](auto mcuPin) { digitalWrite(mcuPin, HIGH); };
+
+	withPin(encoder.signalPinA, writeHigh);
+	withPin(encoder.signalPinC, writeHigh);
+}
+
+void setupKeypadPins()
+{
+	auto setPinAsInputPullup = [](auto mcuPin) { pinMode(mcuPin, INPUT_PULLUP); };
 
 	for (unsigned i = 0; i < FdimButtonType::COUNT; i++)
 	{
 		auto fdimButton = buttons[i];
-		auto pin = pinMap[fdimButton.signalPin];
-		// Make all pins 5V
-		pinMode(pin, INPUT_PULLUP);
 
-		Serial.print("Configure Pin ");
-		Serial.print(InterconnectPinDisplayNameMap[fdimButton.signalPin]);
-		Serial.print(" as connected to pin ");
-
-		Serial.print(InterconnectPinDisplayNameMap[fdimButton.groundPin]);
-		Serial.print(".\n");
+		withPin(fdimButton.signalPin, setPinAsInputPullup);
 	}
-
-
-	pinMode(pinMap[encoder.signalPinA], INPUT);
-	pinMode(pinMap[encoder.signalPinC], INPUT);
-
-	digitalWrite(pinMap[encoder.signalPinA], HIGH);
-	digitalWrite(pinMap[encoder.signalPinC], HIGH);
-
 
 }
-// globals
-int state, prevState = 0, count = 0;
-/* old state, new state, change (+ means clockwise)
- * 0 2 +
- * 1 0 +
- * 2 3 +
- * 3 1 +
- * 0 1 -
- * 1 3 -
- * 2 0 -
- * 3 2 -
- */
-const int encoderStates[4][4] = {
- {  0, -1,  1,  0 }, 
- {  1,  0,  0, -1 }, 
- { -1,  0,  0,  1 }, 
- {  0,  1, -1,  0 }, 
-};
 
-void loop()
+void setupCanComms()
 {
-	const auto lowBitPin = pinMap[encoder.signalPinA];
-	const auto highBitPin = pinMap[encoder.signalPinC];
+	// CAN.setPins(rx, tx);
+	CAN.begin(125000);
+}
 
-	state = (digitalRead(highBitPin) << 1) | digitalRead(lowBitPin);
+void setup()
+{
 
-	count += encoderStates[prevState][state];
-	if (state != prevState) 
-	{
-		Serial.print(state, DEC);
-		Serial.print(' ');
-		Serial.print(prevState, DEC);
-		Serial.print(' ');
-		Serial.println(count, DEC);
-	}
+	// initialize serial to 19.2kbps - this is the speed that head units listen at
+	Serial.begin(19200);
+
+	setupSensorPins();
+	setupKeypadPins();
+	setupCanComms();
+
+}
+
+
+//
+// Read the status of all the input pins and sensors, then update the stored status of the system
+//
+void readInputState()
+{
 
 	for (int i = 0; i < FdimButtonType::COUNT; i++)
 	{
-		const auto 
-		auto pinA = allPins[i];
+		const auto
+			auto pinA = allPins[i];
 		pinMode(pinA, OUTPUT);
 		digitalWrite(pinA, 0);
 		for (int j = 0; j < allPinCount; j++)
@@ -309,7 +345,7 @@ void loop()
 			if (lastValue != currentValue)
 			{
 				hasChanges = true;
-		break;
+				break;
 			}
 		}
 	}
@@ -319,37 +355,37 @@ void loop()
 		Serial.println();
 
 
-//   for (int i = 0; i < allPinCount; i++)
-//   {
-// 	  Serial.print(i% 10);
-//     for (int j = 0; j < allPinCount; j++)
-//     {
-// 	  Serial.print(j% 10);
-//       if (j == i)
-//       {
-// 		  Serial.print(" ");
-//         continue;
-//       }
-//       auto lastValue = lastState[j][i];
-//       auto currentValue = currentState[j][i];
+		//   for (int i = 0; i < allPinCount; i++)
+		//   {
+		// 	  Serial.print(i% 10);
+		//     for (int j = 0; j < allPinCount; j++)
+		//     {
+		// 	  Serial.print(j% 10);
+		//       if (j == i)
+		//       {
+		// 		  Serial.print(" ");
+		//         continue;
+		//       }
+		//       auto lastValue = lastState[j][i];
+		//       auto currentValue = currentState[j][i];
 
-// 	  if (lastValue == currentValue)
-// 	  {
-// 		 Serial.print(" ");
-// 		 continue;
-// 	  }
+		// 	  if (lastValue == currentValue)
+		// 	  {
+		// 		 Serial.print(" ");
+		// 		 continue;
+		// 	  }
 
-// 	if (currentValue == PinStatus::ON ){
-// 		  Serial.print("#");
-// 	  }
-// 	  else
-// 	  {
-// 		  Serial.print("-");
+		// 	if (currentValue == PinStatus::ON ){
+		// 		  Serial.print("#");
+		// 	  }
+		// 	  else
+		// 	  {
+		// 		  Serial.print("-");
 
-// 	  }
-//     }
-// 	Serial.println();
-//   }
+		// 	  }
+		//     }
+		// 	Serial.println();
+		//   }
 
 		memcpy(lastButtonState, currentButtonState, sizeof(lastState));
 	}
@@ -408,88 +444,50 @@ void loop()
 	// }
 
 	// }
+
 }
 
+const int encoderStates[4][4] = {
+ {  0, -1,  1,  0 },
+ {  1,  0,  0, -1 },
+ { -1,  0,  0,  1 },
+ {  0,  1, -1,  0 },
+};
+
+void readRotaryState()
+{
+
+	const auto lowBitPin = pinMap[encoder.signalPinA];
+	const auto highBitPin = pinMap[encoder.signalPinC];
+
+	state = (digitalRead(highBitPin) << 1) | digitalRead(lowBitPin);
+
+	count += encoderStates[prevState][state];
+	if (state != prevState)
+	{
+		Serial.print(state, DEC);
+		Serial.print(' ');
+		Serial.print(prevState, DEC);
+		Serial.print(' ');
+		Serial.println(count, DEC);
+	}
+}
+
+void loop()
+{
+	readRotaryState();
+
+	if (timerMs % 100 == 0)
+	{
+		readKeypadState();
+		outputMediaState();
+	}
+
+	if (timerMs % 500 == 0)
+	{
+		readTempState();
+		outputHvacStatus();
+	}
 
 
-/*
-0x307 Critical Controls
-
-ff = no temp
-85 ~25-30
-
-
-
-00 00 00 00 FF 00 00 00 = No Temp
-40 00 00 00 FF 00 00 00 = RECIRC
-20 00 00 00 FF 00 00 00 = R DEMIST
-80 00 00 00 FF 00 00 00 = ac
-00 02 00 00 FF 00 00 00 = F DEMIST
-00 04 00 00 FF 00 00 00 = FAN-
-00 08 00 00 FF 00 00 00 = FAN+
-00 10 00 00 FF 00 00 00 = HVAC OFF
-00 20 00 00 FF 00 00 00 = AUTO
-00 80 00 00 FF 00 00 00 = VENT
-00 00 01 00 FF 00 00 00 =  HAZZARD
-00 00 40 00 FF 00 00 00 = TEMP-
-00 00 80 00 FF 00 00 00 = TEMP+
-00 00 00 04 FF 00 00 00 = UNLOCK
-00 00 00 40 FF 00 00 00 = LOCK
-00 00 00 10 FF 00 00 00 = DSC
-00 00 00 20 FF 00 00 00 = LAMP
-
-
-0X2FC Media Controls
-
-
-00 00 01 00 00 20 00 08 =  HEAD UNIT OFF STATE
-
-00 00 81 00 00 20 00 08 =  EJECT
-00 00 01 00 00 A0 00 08 =  ROTARY CCW
-00 00 01 00 00 60 00 08 =  ROTARY CW
-00 00 01 00 00 20 00 08 =  CD
-80 00 01 00 00 20 00 08 =  FMAM
-00 40 01 00 00 20 00 08 =  < SEEK
-00 80 01 00 00 20 00 08 =  SEEK >
-
-
-00 00 01 00 00 20 00 08 =  SCAN SOMETHING ELSE
-00 00 01 00 00 20 00 08 =  MEDIA SOMETHING ELSE
-00 00 01 00 00 20 00 08 =  BACK SOMETHING ELSE
-00 00 01 00 00 20 00 08 =  MENU SOMETHING ELSE
-00 00 01 00 00 20 00 08 =  PWR SOMETHING ELSE
-
-
-FDIM sends
-0x2fc
-0x307
-0x313
-0x315
-0x425
-0x55c
-
-
-Instrucment cluster needs:
-0x425
-FE 00 00 00 00 00 00 00
-
-0X307
-
-max 13ms between messages
-
-
-*/
-
-
-/*
-
-
-0X2F2 Head unit status
-37 + 36 Mode
-36 Seek
-37 Vol Up
-36 Vol Down
-36 + 38 = Phone
-
-
-*/
+}
