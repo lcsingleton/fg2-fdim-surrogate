@@ -62,7 +62,8 @@ This document describes the communication protocol between the DVD host system a
 | 5 | ICON | `0xC1` |
 | 6 | Radio information | `0xC2` |
 | 7 | Media playback information | `0xC3` |
-| 8 | Volume display control | `0xC4` |
+| 8 | Volume display control | `0xC4` |[VolkswagenRaiseCanDecoderProtocol.pdf](https://github.com/user-attachments/files/19087711/VolkswagenRaiseCanDecoderProtocol.pdf)
+
 | 9 | Radar volume control | `0xC6` |
 
 ## 7. Data Format Examples
@@ -102,7 +103,6 @@ This document describes the communication protocol between the DVD host system a
 | `0x08` | MIC |
 
 ---
-(More data formats can be added)
 
 ## 8. Conclusion
 This protocol defines the UART communication between the CAN BUS module and the DVD host, covering the physical layer, data link layer, and application layer.
@@ -115,8 +115,8 @@ This protocol defines the UART communication between the CAN BUS module and the 
 
 // Base structure for a UART message
 struct UARTMessage {
-    uint8_t headCode;
-    uint8_t dataType;
+    const uint8_t headCode;
+    const uint8_t dataType;
     uint8_t length;
     uint8_t data[8]; // Fixed-size array instead of vector
     uint8_t checksum;
@@ -278,6 +278,116 @@ struct RequestControlInfo : public UARTMessage {
     }
 };
 
-// More message structures can be added similarly
+/**
+ * Version Information Message
+ */
+struct VersionInfo : public UARTMessage {
+    VersionInfo(uint8_t majorVersion, uint8_t minorVersion) {
+        dataType = 0x30;
+        length = 2;
+        data[0] = majorVersion;
+        data[1] = minorVersion;
+        checksum = calculateChecksum();
+    }
+};
 
+/**
+ * Vehicle Body Information Message
+ */
+struct VehicleBodyInfo : public UARTMessage {
+    VehicleBodyInfo(uint8_t doorStatus, uint8_t trunkStatus, uint8_t hoodStatus) {
+        dataType = 0x41;
+        length = 3;
+        data[0] = doorStatus;
+        data[1] = trunkStatus;
+        data[2] = hoodStatus;
+        checksum = calculateChecksum();
+    }
+};
+
+/**
+ * Amplifier Control Command Message
+ */
+struct AmplifierControlCommand : public UARTMessage {
+    AmplifierControlCommand(uint8_t command) {
+        dataType = 0xA0;
+        length = 1;
+        data[0] = command;
+        checksum = calculateChecksum();
+    }
+};
+
+/**
+ * Source Message
+ */
+struct Source : public UARTMessage {
+    Source(uint8_t sourceType) {
+        dataType = 0xC0;
+        length = 1;
+        data[0] = sourceType;
+        checksum = calculateChecksum();
+    }
+};
+
+/**
+ * ICON Message
+ */
+struct ICON : public UARTMessage {
+    ICON(uint8_t iconType) {
+        dataType = 0xC1;
+        length = 1;
+        data[0] = iconType;
+        checksum = calculateChecksum();
+    }
+};
+
+/**
+ * Radio Information Message
+ */
+struct RadioInfo : public UARTMessage {
+    RadioInfo(uint8_t frequency, uint8_t band) {
+        dataType = 0xC2;
+        length = 2;
+        data[0] = frequency;
+        data[1] = band;
+        checksum = calculateChecksum();
+    }
+};
+
+/**
+ * Media Playback Information Message
+ */
+struct MediaPlaybackInfo : public UARTMessage {
+    MediaPlaybackInfo(uint8_t trackNumber, uint8_t playbackStatus) {
+        dataType = 0xC3;
+        length = 2;
+        data[0] = trackNumber;
+        data[1] = playbackStatus;
+        checksum = calculateChecksum();
+    }
+};
+
+/**
+ * Volume Display Control Message
+ */
+struct VolumeDisplayControl : public UARTMessage {
+    VolumeDisplayControl(uint8_t volumeLevel) {
+        dataType = 0xC4;
+        length = 1;
+        data[0] = volumeLevel;
+        checksum = calculateChecksum();
+    }
+};
+
+/**
+ * Radar Volume Control Message
+ */
+struct RadarVolumeControl : public UARTMessage {
+    RadarVolumeControl(uint8_t volumeLevel) {
+        dataType = 0xC6;
+        length = 1;
+        data[0] = volumeLevel;
+        checksum = calculateChecksum();
+    }
+};
 ```
