@@ -12,8 +12,8 @@ I suspect some form of custom moulded TE Multilock connector with 51 pins
 | Layout | Positions | Contact Width | Pitch       |
 |--------|-----------|---------------|-------------|
 | 4 x 3  | 12        | 2.2mm         | 3mm x 5mm   |
-| 5 x 3	 | 15        | 1.0mm         | 2.2mm x 5mm |
-| 8 x 3	 | 24        | 1.0mm         | 2.2mm x 5mm |
+| 5 x 3	 | 15        | 1.0mm         | 2.54mm x 5mm |
+| 8 x 3	 | 24        | 1.0mm         | 2.54mm x 5mm |
 
 ## Antenna to ACM
 
@@ -33,7 +33,7 @@ Single position 2 wire shielded coax (specifically designed for antennas)
 
 | Layout | Positions | Contact Width | Pitch |
 |--------|-----------|---------------|-------|
-| 12 x 2 | 24        | 1.0mm         | 2.2mm |
+| 12 x 2 | 24        | 0.64mm        | 2.2mm |
 
 
 Runs the (MS) CAN to the ACM. The ACM internally bridges the CAN H and CAN L wires into the Mobile Communication Network (MCN) through the body loom.
