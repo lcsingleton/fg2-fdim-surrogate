@@ -1,71 +1,71 @@
-#include <Arduino.h>
+// #include <Arduino.h>
 #include <CAN.h>
 
 enum InterconnectPin
 {
-	ONE, // LED +
-	TWO, // LED -
-	THREE, // NC
-	FOUR, // NC
-	FIVE,
-	SIX,
-	SEVEN,
-	EIGHT,
-	NINE,
-	TEN,
-	ELEVEN,
-	TWELVE,
-	THIRTEEN,
-	FOURTEEN,
-	FIFTEEN,
-	SIXTEEN,
-	SEVENTEEN,
-	EIGHTEEN,
-	NINETEEN,
-	TWENTY,
-	TWENTY_ONE,
-	TWENTY_TWO,
-	TWENTY_THREE,
-	TWENTY_FOUR,
-	TWENTY_FIVE,
-	TWENTY_SIX,
+	IP_ONE, // LED +
+	IP_TWO, // LED -
+	IP_THREE, // NC
+	IP_FOUR, // NC
+	IP_FIVE,
+	IP_SIX,
+	IP_SEVEN,
+	IP_EIGHT,
+	IP_NINE,
+	IP_TEN,
+	IP_ELEVEN,
+	IP_TWELVE,
+	IP_THIRTEEN,
+	IP_FOURTEEN,
+	IP_FIFTEEN,
+	IP_SIXTEEN,
+	IP_SEVENTEEN,
+	IP_EIGHTEEN,
+	IP_NINETEEN,
+	IP_TWENTY,
+	IP_TWENTY_ONE,
+	IP_TWENTY_TWO,
+	IP_TWENTY_THREE,
+	IP_TWENTY_FOUR,
+	IP_TWENTY_FIVE,
+	IP_TWENTY_SIX,
 
-	COUNT,
+	IP_COUNT,
 };
 
 enum FdmButtonType
 {
-	HVAC_OFF,
-	RECIRC,
-	AC,
-	AUTO,
-	HAZARD,
-	FRONT_DEMIST,
-	VENTS,
-	REAR_DEMIST,
-	PASS_TEMP_MINUS,
-	PASS_TEMP_PLUS,
-	FAN_MINUS,
-	FAN_PLUS,
-	DRIVER_TEMP_MINUS,
-	DRIVER_TEMP_PLUS,
-	EJECT,
-	SOURCE_CD,
-	SCN_AS,
-	SOURCE_MEDIA,
-	SOURCE_FM_AM,
-	BACK,
-	OK,
-	MENU,
-	AUDIO_POWER,
-	SEEK_LEFT,
-	SEEK_RIGHT,
-	LOCK,
-	UNLOCK,
-	DSC,
-	INTERIOR_LIGHT,
+	FBT_HVAC_OFF,
+	FBT_RECIRC,
+	FBT_AC,
+	FBT_AUTO,
+	FBT_HAZARD,
+	FBT_FRONT_DEMIST,
+	FBT_VENTS,
+	FBT_REAR_DEMIST,
+	FBT_PASS_TEMP_MINUS,
+	FBT_PASS_TEMP_PLUS,
+	FBT_FAN_MINUS,
+	FBT_FAN_PLUS,
+	FBT_DRIVER_TEMP_MINUS,
+	FBT_DRIVER_TEMP_PLUS,
+	FBT_EJECT,
+	FBT_SOURCE_CD,
+	FBT_SCN_AS,
+	FBT_SOURCE_MEDIA,
+	FBT_SOURCE_FM_AM,
+	FBT_BACK,
+	FBT_OK,
+	FBT_MENU,
+	FBT_AUDIO_POWER,
+	FBT_SEEK_LEFT,
+	FBT_SEEK_RIGHT,
+	FBT_LOCK,
+	FBT_UNLOCK,
+	FBT_DSC,
+	FBT_INTERIOR_LIGHT,
 
-	COUNT
+	FBT_COUNT
 };
 
 struct FdmButton
@@ -92,7 +92,7 @@ struct FdmTempSensor
 	const char* displayName;
 };
 
-const char* InterconnectPinDisplayNameMap[InterconnectPin::COUNT] = {
+const char* InterconnectPinDisplayNameMap[InterconnectPin::IP_COUNT] = {
 
 	"LED+", // LED +
 	"LED-", // LED -
@@ -120,59 +120,59 @@ const char* InterconnectPinDisplayNameMap[InterconnectPin::COUNT] = {
 	"TEMP_SENSE",
 	"GROUND",
 	"ROTARY_ENCODER_B",
-}
+};
 
 
-const FdmButton buttons[FdmButtonType::COUNT] = {
-	{ FdmButtonType::HVAC_OFF, 		InterconnectPin::ELEVEN, 	InterconnectPin::SIXTEEN, "Toggle HVAC"},
-	{ FdmButtonType::RECIRC, 			InterconnectPin::TWELVE, 	InterconnectPin::SIXTEEN, "Recirc/Fresh"},
-	{ FdmButtonType::AC, 				InterconnectPin::THIRTEEN, 	InterconnectPin::SIXTEEN, "Toggle Air Conditioning"},
-	{ FdmButtonType::AUTO, 			InterconnectPin::FOURTEEN, 	InterconnectPin::SIXTEEN, "Enable Climate Control"},
+const FdmButton buttons[FdmButtonType::FBT_COUNT] = {
+	{ FdmButtonType::FBT_HVAC_OFF, 		InterconnectPin::IP_ELEVEN, 	InterconnectPin::IP_SIXTEEN, "Toggle HVAC"},
+	{ FdmButtonType::FBT_RECIRC, 			InterconnectPin::IP_TWELVE, 	InterconnectPin::IP_SIXTEEN, "Recirc/Fresh"},
+	{ FdmButtonType::FBT_AC, 				InterconnectPin::IP_THIRTEEN, 	InterconnectPin::IP_SIXTEEN, "Toggle Air Conditioning"},
+	{ FdmButtonType::FBT_AUTO, 			InterconnectPin::IP_FOURTEEN, 	InterconnectPin::IP_SIXTEEN, "Enable Climate Control"},
 
-	{ FdmButtonType::FAN_MINUS, 		InterconnectPin::ELEVEN, 	InterconnectPin::SEVENTEEN, "Reduce Fan Speed"},
-	{ FdmButtonType::FAN_PLUS, 		InterconnectPin::TWELVE, 	InterconnectPin::SEVENTEEN, "Increase Fan Speed"},
+	{ FdmButtonType::FBT_FAN_MINUS, 		InterconnectPin::IP_ELEVEN, 	InterconnectPin::IP_SEVENTEEN, "Reduce Fan Speed"},
+	{ FdmButtonType::FBT_FAN_PLUS, 		InterconnectPin::IP_TWELVE, 	InterconnectPin::IP_SEVENTEEN, "Increase Fan Speed"},
 
 	// This is conjecture - I don't have a DZ Climate Control ICC
-	{ FdmButtonType::PASS_TEMP_PLUS, 	InterconnectPin::THIRTEEN, 	InterconnectPin::SEVENTEEN, "Increase Passenger Temp"},
-	{ FdmButtonType::PASS_TEMP_MINUS, 	InterconnectPin::FOURTEEN, 	InterconnectPin::SEVENTEEN, "Reduce Passenger Temp"},
+	{ FdmButtonType::FBT_PASS_TEMP_PLUS, 	InterconnectPin::IP_THIRTEEN, 	InterconnectPin::IP_SEVENTEEN, "Increase Passenger Temp"},
+	{ FdmButtonType::FBT_PASS_TEMP_MINUS, 	InterconnectPin::IP_FOURTEEN, 	InterconnectPin::IP_SEVENTEEN, "Reduce Passenger Temp"},
 
-	{ FdmButtonType::VENTS,			InterconnectPin::ELEVEN, 	InterconnectPin::EIGHTEEN , "Cycle Vents"},
-	{ FdmButtonType::FRONT_DEMIST,		InterconnectPin::TWELVE, 	InterconnectPin::EIGHTEEN, "Toggle Windscreen Demister"},
-	{ FdmButtonType::DRIVER_TEMP_MINUS,InterconnectPin::THIRTEEN, 	InterconnectPin::EIGHTEEN, "Reduce Temperature"},
-	{ FdmButtonType::DRIVER_TEMP_PLUS,	InterconnectPin::FOURTEEN, 	InterconnectPin::EIGHTEEN, "Increase Temperature"},
-	{ FdmButtonType::REAR_DEMIST,		InterconnectPin::FIFTEEN, 	InterconnectPin::EIGHTEEN, "Toggle Rear Demister"},
+	{ FdmButtonType::FBT_VENTS,			InterconnectPin::IP_ELEVEN, 	InterconnectPin::IP_EIGHTEEN , "Cycle Vents"},
+	{ FdmButtonType::FBT_FRONT_DEMIST,		InterconnectPin::IP_TWELVE, 	InterconnectPin::IP_EIGHTEEN, "Toggle Windscreen Demister"},
+	{ FdmButtonType::FBT_DRIVER_TEMP_MINUS,InterconnectPin::IP_THIRTEEN, 	InterconnectPin::IP_EIGHTEEN, "Reduce Temperature"},
+	{ FdmButtonType::FBT_DRIVER_TEMP_PLUS,	InterconnectPin::IP_FOURTEEN, 	InterconnectPin::IP_EIGHTEEN, "Increase Temperature"},
+	{ FdmButtonType::FBT_REAR_DEMIST,		InterconnectPin::IP_FIFTEEN, 	InterconnectPin::IP_EIGHTEEN, "Toggle Rear Demister"},
 
-	{ FdmButtonType::DSC,				InterconnectPin::ELEVEN, 	InterconnectPin::NINETEEN, "Toggle Stability Control"},
-	{ FdmButtonType::SCN_AS,			InterconnectPin::TWELVE, 	InterconnectPin::NINETEEN, "Scan Radio"},
-	{ FdmButtonType::SOURCE_MEDIA,		InterconnectPin::THIRTEEN, 	InterconnectPin::NINETEEN, "Cycle Media Audio Sources"},
-	{ FdmButtonType::SOURCE_FM_AM,		InterconnectPin::FOURTEEN, 	InterconnectPin::NINETEEN, "Cycle FM, AM Audio Sources"},
-	{ FdmButtonType::BACK,				InterconnectPin::SIXTEEN, 	InterconnectPin::NINETEEN, "Back"},
+	{ FdmButtonType::FBT_DSC,				InterconnectPin::IP_ELEVEN, 	InterconnectPin::IP_NINETEEN, "Toggle Stability Control"},
+	{ FdmButtonType::FBT_SCN_AS,			InterconnectPin::IP_TWELVE, 	InterconnectPin::IP_NINETEEN, "Scan Radio"},
+	{ FdmButtonType::FBT_SOURCE_MEDIA,		InterconnectPin::IP_THIRTEEN, 	InterconnectPin::IP_NINETEEN, "Cycle Media Audio Sources"},
+	{ FdmButtonType::FBT_SOURCE_FM_AM,		InterconnectPin::IP_FOURTEEN, 	InterconnectPin::IP_NINETEEN, "Cycle FM, AM Audio Sources"},
+	{ FdmButtonType::FBT_BACK,				InterconnectPin::IP_SIXTEEN, 	InterconnectPin::IP_NINETEEN, "Back"},
 
-	{ FdmButtonType::SOURCE_CD,		InterconnectPin::ELEVEN, 	InterconnectPin::TWENTY, "Select CD Audio Source"},
-	{ FdmButtonType::OK,			 	InterconnectPin::TWELVE, 	InterconnectPin::TWENTY, "OK"},
-	{ FdmButtonType::MENU,			 	InterconnectPin::THIRTEEN, 	InterconnectPin::TWENTY, "Menu"},
-	{ FdmButtonType::SEEK_LEFT,		InterconnectPin::FOURTEEN, 	InterconnectPin::TWENTY, "Seek Lower"},
-	{ FdmButtonType::SEEK_RIGHT,		InterconnectPin::FIFTEEN, 	InterconnectPin::TWENTY, "Seek Higher"},
+	{ FdmButtonType::FBT_SOURCE_CD,		InterconnectPin::IP_ELEVEN, 	InterconnectPin::IP_TWENTY, "Select CD Audio Source"},
+	{ FdmButtonType::FBT_OK,			 	InterconnectPin::IP_TWELVE, 	InterconnectPin::IP_TWENTY, "OK"},
+	{ FdmButtonType::FBT_MENU,			 	InterconnectPin::IP_THIRTEEN, 	InterconnectPin::IP_TWENTY, "Menu"},
+	{ FdmButtonType::FBT_SEEK_LEFT,		InterconnectPin::IP_FOURTEEN, 	InterconnectPin::IP_TWENTY, "Seek Lower"},
+	{ FdmButtonType::FBT_SEEK_RIGHT,		InterconnectPin::IP_FIFTEEN, 	InterconnectPin::IP_TWENTY, "Seek Higher"},
 
-	{ FdmButtonType::HAZARD,       	InterconnectPin::FIVE, 		InterconnectPin::TWENTY_TWO, "Toggle Hazard Lights"},
-	{ FdmButtonType::AUDIO_POWER,  	InterconnectPin::SIX, 		InterconnectPin::TWENTY_TWO, "Toggle Audio Power"},
-	{ FdmButtonType::EJECT,        	InterconnectPin::SEVEN, 	InterconnectPin::TWENTY_TWO, "Eject CD"},
-	{ FdmButtonType::LOCK,       		InterconnectPin::EIGHT, 	InterconnectPin::TWENTY_TWO, "Lock Car Doors"},
-	{ FdmButtonType::UNLOCK,       	InterconnectPin::NINE, 		InterconnectPin::TWENTY_TWO, "Unlock Car Doors"},
-	{ FdmButtonType::INTERIOR_LIGHT,   InterconnectPin::TWELVE, 	InterconnectPin::TWENTY_TWO, "Toggle Cabin Light"},
+	{ FdmButtonType::FBT_HAZARD,       	InterconnectPin::IP_FIVE, 		InterconnectPin::IP_TWENTY_TWO, "Toggle Hazard Lights"},
+	{ FdmButtonType::FBT_AUDIO_POWER,  	InterconnectPin::IP_SIX, 		InterconnectPin::IP_TWENTY_TWO, "Toggle Audio Power"},
+	{ FdmButtonType::FBT_EJECT,        	InterconnectPin::IP_SEVEN, 	InterconnectPin::IP_TWENTY_TWO, "Eject CD"},
+	{ FdmButtonType::FBT_LOCK,       		InterconnectPin::IP_EIGHT, 	InterconnectPin::IP_TWENTY_TWO, "Lock Car Doors"},
+	{ FdmButtonType::FBT_UNLOCK,       	InterconnectPin::IP_NINE, 		InterconnectPin::IP_TWENTY_TWO, "Unlock Car Doors"},
+	{ FdmButtonType::FBT_INTERIOR_LIGHT,   InterconnectPin::IP_TEN, 	InterconnectPin::IP_TWENTY_TWO, "Toggle Cabin Light"},
 };
 
 
 const FdmRotaryEncoder encoder = {
-	InterconnectPin::TWENTY_TWO,
-	InterconnectPin::TWENTY_THREE,
-	InterconnectPin::TWENTY_SIX,
+	InterconnectPin::IP_TWENTY_TWO,
+	InterconnectPin::IP_TWENTY_THREE,
+	InterconnectPin::IP_TWENTY_SIX,
 	"Volume Control"
 };
 
 const FdmTempSensor tempSensor = {
-	InterconnectPin::TWENTY_FIVE,
-	InterconnectPin::TWENTY_FOUR,
+	InterconnectPin::IP_TWENTY_FIVE,
+	InterconnectPin::IP_TWENTY_FOUR,
 	"Cabin Temp Sensor"
 };
 
@@ -187,8 +187,8 @@ enum FdmButtonStatus
 // ---------------------------------------
 // Current System Status Variables
 // ---------------------------------------
-FdmButtonStatus lastButtonStatus[FdmButtonType::COUNT] = {};
-FdmButtonStatus currentButtonStatus[FdmButtonType::COUNT] = {};
+FdmButtonStatus lastButtonStatus[FdmButtonType::FBT_COUNT] = {};
+FdmButtonStatus currentButtonStatus[FdmButtonType::FBT_COUNT] = {};
 
 
 
@@ -202,52 +202,52 @@ struct InterconnectPinMap
 
 const unsigned PIN_NOT_SET = 0XFF;
 
-const InterconnectPinMap pinMap[InterconnectPin::COUNT] = {
+const InterconnectPinMap pinMap[InterconnectPin::IP_COUNT] = {
 	// TODO: Fill this out when the header is completed
-	{.connectorPin = InterconnectPin::ONE, .mcuPin = PIN_NOT_SET },  // LED +
-	{.connectorPin = InterconnectPin::TWO, .mcuPin = PIN_NOT_SET },  // LED -
-	{.connectorPin = InterconnectPin::THREE, .mcuPin = PIN_NOT_SET },  // NC
-	{.connectorPin = InterconnectPin::FOUR, .mcuPin = PIN_NOT_SET },  // NC
-	{.connectorPin = InterconnectPin::FIVE, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::SIX, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::SEVEN, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::EIGHT, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::NINE, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::TEN, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::ELEVEN, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::TWELVE, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::THIRTEEN, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::FOURTEEN, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::FIFTEEN, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::SIXTEEN, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::SEVENTEEN, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::EIGHTEEN, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::NINETEEN, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::TWENTY, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::TWENTY_ONE, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::TWENTY_TWO, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::TWENTY_THREE, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::TWENTY_FOUR, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::TWENTY_FIVE, .mcuPin = PIN_NOT_SET },
-	{.connectorPin = InterconnectPin::TWENTY_SIX, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_ONE, .mcuPin = PIN_NOT_SET },  // LED +
+	{.connectorPin = InterconnectPin::IP_TWO, .mcuPin = PIN_NOT_SET },  // LED -
+	{.connectorPin = InterconnectPin::IP_THREE, .mcuPin = PIN_NOT_SET },  // NC
+	{.connectorPin = InterconnectPin::IP_FOUR, .mcuPin = PIN_NOT_SET },  // NC
+	{.connectorPin = InterconnectPin::IP_FIVE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_SIX, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_SEVEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_EIGHT, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_NINE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_TEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_ELEVEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_TWELVE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_THIRTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_FOURTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_FIFTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_SIXTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_SEVENTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_EIGHTEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_NINETEEN, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_TWENTY, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_TWENTY_ONE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_TWENTY_TWO, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_TWENTY_THREE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_TWENTY_FOUR, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_TWENTY_FIVE, .mcuPin = PIN_NOT_SET },
+	{.connectorPin = InterconnectPin::IP_TWENTY_SIX, .mcuPin = PIN_NOT_SET },
 };
 
 
 bool withPin(const InterconnectPin iPin, void (*callback)(unsigned))
 {
-	if (!iPin || iPin >= InterconnectPin::COUNT)
+	if (!iPin || iPin >= InterconnectPin::IP_COUNT)
 	{
 		return false;
 	}
-	auto mcuPin = pinMap[iPin];
-	if (mcuPin == PIN_NOT_SET)
+	auto mcuPin = pinMap[iPin].mcuPin;
+	if (mcuPin  == PIN_NOT_SET)
 	{
 		return false;
 	}
 	callback(mcuPin);
 }
 
-
+/*
 void setupSensorPins()
 {
 	withPin(tempSensor.sensePin, [](auto mcuPin) { pinMode(mcuPin, ANALOG_INPUT); });
@@ -267,7 +267,7 @@ void setupKeypadPins()
 {
 	auto setPinAsInputPullup = [](auto mcuPin) { pinMode(mcuPin, INPUT_PULLUP); };
 
-	for (unsigned i = 0; i < FdmButtonType::COUNT; i++)
+	for (unsigned i = 0; i < FdmButtonType::FBT_COUNT; i++)
 	{
 		auto fdmButton = buttons[i];
 
@@ -275,6 +275,7 @@ void setupKeypadPins()
 	}
 
 }
+*/
 
 void setupCanComms()
 {
@@ -288,8 +289,8 @@ void setup()
 	// initialize serial to 38.4kbps - this is the speed that head units listen at
 	Serial.begin(38400);
 
-	setupSensorPins();
-	setupKeypadPins();
+	// setupSensorPins();
+	// setupKeypadPins();
 	setupCanComms();
 
 }
@@ -298,13 +299,13 @@ void setup()
 //
 // Read the status of all the input pins and sensors, then update the stored status of the system
 //
+/*
 void readInputState()
 {
 
-	for (int i = 0; i < FdmButtonType::COUNT; i++)
+	for (int i = 0; i < FdmButtonType::FBT_COUNT; i++)
 	{
-		const auto
-			auto pinA = allPins[i];
+		auto pinA = allPins[i];
 		pinMode(pinA, OUTPUT);
 		digitalWrite(pinA, 0);
 		for (int j = 0; j < allPinCount; j++)
@@ -457,8 +458,8 @@ const int encoderStates[4][4] = {
 void readRotaryState()
 {
 
-	const auto lowBitPin = pinMap[encoder.signalPinA];
-	const auto highBitPin = pinMap[encoder.signalPinC];
+	const auto lowBitPin = pinMap[encoder.signalPinA].mcuPin;
+	const auto highBitPin = pinMap[encoder.signalPinC].mcuPin;
 
 	state = (digitalRead(highBitPin) << 1) | digitalRead(lowBitPin);
 
@@ -490,20 +491,128 @@ void readTempState()
 		});
 
 }
+*/
+
+unsigned char buff[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+struct TimerFlags
+{
+	short _25ms = 25; 
+	short _100ms = 100;
+	short _125ms = 125; 
+	short _500ms = 500;
+	unsigned long lastMs = -1l;
+};
+
+TimerFlags tf;
+
+unsigned long getTfDeltaMs(unsigned long currentMs)
+{
+	if( currentMs < tf.lastMs )
+	{
+		// overflow has happened
+		return (-1ul - tf.lastMs) + currentMs;
+	}
+	return tf.lastMs - currentMs;
+}
+
+void tickTimerFlags()
+{
+	auto ms = millis();
+	auto deltaMs = getTfDeltaMs(ms);
+
+	tf._25ms -= deltaMs;
+	tf._100ms -= deltaMs;
+	tf._125ms -= deltaMs;
+	tf._500ms -= deltaMs;
+	tf.lastMs = ms;	 
+}
+
+void outputHvacStatus()
+{
+	CAN.beginPacket(0x307);
+	buff[0] = 0x00;
+	buff[1] = 0x00;
+	buff[2] = 0x00;
+	buff[3] = 0x00;
+	buff[4] = 0xFF;
+	buff[5] = 0xFF;
+	buff[6] = 0xFF;
+	buff[7] = 0xFF;
+	CAN.write(buff, 8);
+	CAN.endPacket();
+}
+void outputKeepAlive()
+{
+	CAN.beginPacket(0x425);
+	buff[0] = 0xFE;
+	buff[1] = 0x00;
+	buff[2] = 0x00;
+	buff[3] = 0x00;
+	buff[4] = 0xFF;
+	buff[5] = 0xFF;
+	buff[6] = 0xFF;
+	buff[7] = 0xFF;
+	CAN.write(buff, 8);
+	CAN.endPacket();
+}
+
+bool shouldExecute(short tfAttribute)
+{
+	return tfAttribute <= 0;
+}
+
+void resetTimerFlags()
+{
+	auto ms = millis();
+	auto deltaMs = getTfDeltaMs(ms);
+
+	if( shouldExecute( tf._25ms ) )
+	{
+		tf._25ms = 25 - deltaMs;
+	}
+	if( shouldExecute( tf._100ms ) )
+	{
+		tf._100ms = 100 - deltaMs;
+	}
+	if( shouldExecute( tf._125ms ) )
+	{
+		tf._125ms = 125 - deltaMs;
+	}
+	if( shouldExecute( tf._500ms ) )
+	{
+		tf._500ms = 500 - deltaMs;
+	}
+}
 
 void loop()
 {
-	readRotaryState();
+	tickTimerFlags();
+	// readRotaryState();
 
-	if (timerMs % 100 == 0)
+	if (shouldExecute(tf._25ms))
 	{
-		readKeypadState();
-		outputMediaState();
+		//readKeypadState();
 	}
 
-	if (timerMs % 500 == 0)
+	if (shouldExecute(tf._100ms))
 	{
-		readTempState();
+		// 2FC
+		// outputMediaControlState();
+	}
+	
+	if (shouldExecute(tf._125ms))
+	{
+		// 425
+		outputKeepAlive();
+	}
+
+	if (shouldExecute(tf._25ms))
+	{
+		// 307
+		// readTempState();
 		outputHvacStatus();
 	}
+
+	resetTimerFlags();
 }
