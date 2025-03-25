@@ -2,3 +2,4 @@ ahu-src
 docs-src
 CMakeFiles
 CMakeCache.txt
+CMakeUserPresets.json

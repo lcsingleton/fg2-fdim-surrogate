@@ -248,29 +248,29 @@ bool withPin(const InterconnectPin iPin, void (*callback)(unsigned))
 
 void setupSensorPins()
 {
-  withPin(tempSensor.sensePin, [](unsigned mcuPin) { pinMode(mcuPin, OUTPUT); });
+	withPin(tempSensor.sensePin, [](unsigned mcuPin) { pinMode(mcuPin, OUTPUT); });
 
-  auto setPinAsInput = [](unsigned mcuPin) { pinMode(mcuPin, INPUT); };
+	auto setPinAsInput = [](unsigned mcuPin) { pinMode(mcuPin, INPUT); };
 
-  withPin(encoder.signalPinA, setPinAsInput);
-  withPin(encoder.signalPinC, setPinAsInput);
+	withPin(encoder.signalPinA, setPinAsInput);
+	withPin(encoder.signalPinC, setPinAsInput);
 
-  auto writeHigh = [](unsigned mcuPin) { digitalWrite(mcuPin, HIGH); };
+	auto writeHigh = [](unsigned mcuPin) { digitalWrite(mcuPin, HIGH); };
 
-  withPin(encoder.signalPinA, writeHigh);
-  withPin(encoder.signalPinC, writeHigh);
+	withPin(encoder.signalPinA, writeHigh);
+	withPin(encoder.signalPinC, writeHigh);
 }
 
 void setupKeypadPins()
 {
-  auto setPinAsInputPullup = [](unsigned mcuPin) { pinMode(mcuPin, INPUT_PULLUP); };
+	auto setPinAsInputPullup = [](unsigned mcuPin) { pinMode(mcuPin, INPUT_PULLUP); };
 
-  for (unsigned i = 0; i < FdmButtonType::FBT_COUNT; i++)
-  {
-	auto fdmButton = buttons[i];
+	for (unsigned i = 0; i < FdmButtonType::FBT_COUNT; i++)
+	{
+		auto fdmButton = buttons[i];
 
-	withPin(fdmButton.signalPin, setPinAsInputPullup);
-  }
+		withPin(fdmButton.signalPin, setPinAsInputPullup);
+	}
 
 }
 
@@ -288,6 +288,11 @@ void setupCanComms()
 		Serial.println("Starting CAN failed!");
 		while (1);
 	}
+
+	msCan.init_Mask(0, 0xFFFF);
+	msCan.init_Filt(0, 0x0000);
+	msCan.init_Mask(1, 0xFFFF);
+	msCan.init_Filt(1, 0x0000);
 	msCan.setMode(MCP_NORMAL);   // Change to normal mode to allow messages to be transmitted
 }
 
@@ -544,28 +549,31 @@ void tickTimerFlags()
 	tf.lastMs = ms;
 }
 
+union HvacStatus
+{
+	uint8_t bytes[8];
+	struct {
+
+		uint8_t something1{ 0x00 };
+		uint8_t something2{ 0x00 };
+		uint8_t something3{ 0x00 };
+		uint8_t internalTemp{ 0xFF };
+		uint8_t something5{ 0x00 };
+		uint8_t something6{ 0x00 };
+		uint8_t something7{ 0x00 };
+	};
+
+};
+
 void outputHvacStatus()
 {
-	char buff[8];
-	buff[0] = 0x00;
-	buff[1] = 0x00;
-	buff[2] = 0x00;
-	buff[3] = 0x00;
-	buff[4] = 0xFF;
-	buff[5] = 0x00;
-	buff[6] = 0x00;
-	buff[7] = 0x00;
+	HvacStatus hvacStatus;
 
-	auto result = msCan.sendMsgBuf(0x307, 1, 8, buff);
-	Serial.print(result);
+	auto result = msCan.sendMsgBuf(0x307, 0, 8, hvacStatus.bytes);
 	if (result == CAN_OK)
 	{
-		Serial.println("Output HVAC Status");
 	}
-	else
-	{
-		Serial.println("HVAC Status Failed");
-	}
+
 }
 
 void outputKeepAlive()
@@ -581,15 +589,8 @@ void outputKeepAlive()
 	buff[7] = 0x00;
 
 	auto result = msCan.sendMsgBuf(0x425, 1, 8, buff);
-	Serial.print(result);
-	if (result == CAN_OK)
-	{
-		Serial.println("Output Keep Alive");
-	}
-	else
-	{
-		Serial.println("Keep Alive Failed");
-	}
+	if (result == CAN_OK) {}
+
 }
 
 bool shouldExecute(short tfAttribute)
@@ -637,7 +638,7 @@ void loop()
 	if (shouldExecute(tf._100ms))
 	{
 		// 2FC
-		// outputMediaControlState();
+		outputMediaControlState();
 	}
 
 	if (shouldExecute(tf._125ms))

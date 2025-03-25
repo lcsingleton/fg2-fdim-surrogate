@@ -16,6 +16,6 @@ target_compile_options(fdm PRIVATE
 )
 arduino_avr_hex(fdm)
 
-set(ARDUINO_PORT "/dev/ttyACM0"
+set(ARDUINO_PORT "COM13"
     CACHE STRING "The serial port for uploading using avrdude")
 arduino_avr_upload(fdm ${ARDUINO_PORT})
