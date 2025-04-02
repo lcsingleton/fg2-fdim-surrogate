@@ -1,6 +1,4 @@
-// #include <Arduino.h>
-#include <SPI.h>
-#include <mcp_can.h>
+#include <stm32/can.h>
 
 enum InterconnectPin
 {

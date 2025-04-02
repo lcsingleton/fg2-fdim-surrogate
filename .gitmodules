@@ -1,0 +1,3 @@
+[submodule "ICC/lib/libopencm3_cmake"]
+	path = ICC/lib/libopencm3_cmake
+	url = https://github.com/mikisama/libopencm3_cmake.git
