@@ -1,4 +1,18 @@
-#include <stm32/can.h>
+
+// Reset and Clock Controls
+#include <libopencm3/stm32/rcc.h>
+
+//
+#include <libopencm3/stm32/gpio.h>
+
+// Timer Features
+#include <libopencm3/cm3/systick.h>
+
+// Interrupt RegisterControls
+#include <libopencm3/cm3/nvic.h>
+
+// CAN System
+#include <libopencm3/stm32/can.h>
 
 enum InterconnectPin
 {
@@ -272,26 +286,39 @@ void setupKeypadPins()
 
 }
 
-
-MCP_CAN msCan(53);
+constexpr auto canPort = CAN1;
 
 void setupCanComms()
 {
+	// Reset the inbuilt CAN1 Can Controller
+	can_reset( canPort );
+	auto result = can_init(
+		canPort, // Working with CAN1 Can Controller
+		false, // Time triggered comms off
+		true, // Auto bus off management enabled
+		true, // Auto wake up enabled
+		true, // Automatic re-transmission enable 
+		false, // Keep the most recent CAN frames when FIFO is full
+		false, // Send the most recent CAN frames when FIFO is full
+		CAN_BTR_SJW_1TQ, // Resync time quanta jump width
+		CAN_BTR_TS1_6TQ, // Time Segment 1 Quanta width
+		CAN_BTR_TS2_1TQ, // Time Segment 2 Quanta width
+		99, // Baud Rate prescalar - register values are off by one
+		false, // Disable transmission loopback
+		false // not silent ??
+	 );
+	
+	 // Baud rate = 1/ Bit time
+	 // 1 / 0.000008s = 125000 = 125 kbps
+	 // Bit time = tPCLK + ( tPCLK * Time Segment 1 ) + ( tPCLK * Time Segment 2 )
+	 // tPCLK = 1 / 100MHz = 0.000001s
+	 // 0.000001s + ( 0.000001s * 6 ) + ( 0.000001s *) =  0.000008s
 
-	if (msCan.begin(MCP_ANY, CAN_125KBPS, MCP_8MHZ) == CAN_OK)
-	{
-		Serial.println("Start CAN succeeded Initialized Successfully!");
-	}
-	else {
-		Serial.println("Starting CAN failed!");
-		while (1);
-	}
 
-	msCan.init_Mask(0, 0xFFFF);
-	msCan.init_Filt(0, 0x0000);
-	msCan.init_Mask(1, 0xFFFF);
-	msCan.init_Filt(1, 0x0000);
-	msCan.setMode(MCP_NORMAL);   // Change to normal mode to allow messages to be transmitted
+
+	 can_fifo_release(canPort, 0);
+	 can_fifo_release(canPort, 1);
+
 }
 
 void setup()
@@ -549,16 +576,16 @@ void tickTimerFlags()
 
 union HvacStatus
 {
-	uint8_t bytes[8];
+	uint8_t bytes[8] = { 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00 };
 	struct {
 
-		uint8_t something1{ 0x00 };
-		uint8_t something2{ 0x00 };
-		uint8_t something3{ 0x00 };
-		uint8_t internalTemp{ 0xFF };
-		uint8_t something5{ 0x00 };
-		uint8_t something6{ 0x00 };
-		uint8_t something7{ 0x00 };
+		uint8_t something1;
+		uint8_t something2;
+		uint8_t something3;
+		uint8_t internalTemp;
+		uint8_t something5;
+		uint8_t something6;
+		uint8_t something7;
 	};
 
 };
@@ -567,28 +594,43 @@ void outputHvacStatus()
 {
 	HvacStatus hvacStatus;
 
-	auto result = msCan.sendMsgBuf(0x307, 0, 8, hvacStatus.bytes);
-	if (result == CAN_OK)
-	{
-	}
 
+	auto result = can_transmit(
+		canPort,
+		0x307, // Arbitration id
+		false, // Not extended 
+		false, // Not a request to transmit
+		sizeof (hvacStatus.bytes), // size of payload
+		hvacStatus.bytes // data to transmit
+	);
+
+	if( result >= 0 )
+	{
+		// success, result contains the mailbox (0, 1, or 2) the message was placed in
+	}
 }
+
+union IccKeepAlive
+{
+	uint8_t bytes[8] = { 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+};
 
 void outputKeepAlive()
 {
-	char buff[8];
-	buff[0] = 0xFE;
-	buff[1] = 0x00;
-	buff[2] = 0x00;
-	buff[3] = 0x00;
-	buff[4] = 0x00;
-	buff[5] = 0x00;
-	buff[6] = 0x00;
-	buff[7] = 0x00;
+	IccKeepAlive iccKeepAlive;
 
-	auto result = msCan.sendMsgBuf(0x425, 1, 8, buff);
-	if (result == CAN_OK) {}
+	auto result = can_transmit(
+		canPort,
+		0x425, // Arbitration id
+		false, // Not extended 
+		false, // Not a request to transmit
+		sizeof (iccKeepAlive), // size of payload
+		iccKeepAlive.bytes // data to transmit
+	);
 
+	if (result >= 0) {
+		// success, result contains the mailbox (0, 1, or 2) the message was placed in
+	}
 }
 
 bool shouldExecute(short tfAttribute)
