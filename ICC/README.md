@@ -58,7 +58,7 @@ Runs the (MS) CAN to the ACM. The ACM internally bridges the CAN H and CAN L wir
 
 **Socket:** Hirose DF11-26DS-2C
 
-**Header:** Hirose DF11-26P-2DSA
+**Header:** Hirose DF11-26DP-2DSA
 
 2x13 26 position Hi-Rose connector
 
