@@ -1,55 +1,29 @@
-#ifndef ICCKEYPADSTATUS_H 
-#define ICCKEYPADSTATUS_H
+#ifndef KEYPADSTATUS_H
+#define KEYPADSTATUS_H
+#include "Register/Types.hpp"
 
-enum MsCanId
+
+struct CanMediaStatus
 {
-	RDS_MESSAGE = 0x2F5,
-	ICC_BUTTONS = 0x2FC,
-	ICC = 0x307,
-	INTACTTEMP = 0x313,
-	MENU_OPTIONS_ICC = 0x315,
+	const uint32_t arbitrationId = 0x2FC;
+	unsigned short bytes[8] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
-	// NFI??
-	PCM_CRS_ECON = 0x425,
 
-	FDM_KEEPALIVE = 0x55C,
-
-	// WTF??
-	MSG2 = 0x6f8
-};
-
-enum FdmId
+struct MediaState
 {
-	
-};
-
-struct FdmKeyStatus
-{
-
-};
-
-
-struct CanMessage
-{
-	MsCanId id;
-	union CanData
-	{
-		unsigned[4] _unsigned;
-		char[8] _char;
-
-	} canData;
-};
-
-
-
-struct 
-{
-	unsigned padding1: 16;
-	unsigned padding2: 16;
-	bool isTempActive: 1;
-	unsigned temp: 7
-	char b5: 8;
-	unsigned padding3: 16;
+	auto back = false;
+	bool cd = false;
+	bool eject = false;
+	bool fmAm = false;
+	bool leftSeek = false;
+	auto media = false;
+	auto menu = false;
+	auto ok = false;
+	auto power = false;
+	bool rightSeek = false;
+	bool rotaryClockwise = false;
+	bool rotaryCounterClockwise = false;
+	auto scan = false;
 };
 
 

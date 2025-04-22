@@ -130,15 +130,17 @@ const FdmButton buttons[FdmButtonType::FBT_COUNT] = {
   // ---------------------------------------
   FdmButtonStatus lastButtonStatus[FdmButtonType::FBT_COUNT] = {};
   FdmButtonStatus currentButtonStatus[FdmButtonType::FBT_COUNT] = {};
+
+  typedef unsigned McuPin;
   
   struct InterconnectPinMap
   {
       InterconnectPin connectorPin;
-      unsigned mcuPin;
+      McuPin mcuPin;
   };
   
   
-  const unsigned PIN_NOT_SET = 0XFF;
+  const McuPin PIN_NOT_SET = 0XFF;
   
   const InterconnectPinMap pinMap[InterconnectPin::IP_COUNT] = {
       // TODO: Fill this out when the header is completed
@@ -169,9 +171,11 @@ const FdmButton buttons[FdmButtonType::FBT_COUNT] = {
       {.connectorPin = InterconnectPin::IP_TWENTY_FIVE, .mcuPin = PIN_NOT_SET },
       {.connectorPin = InterconnectPin::IP_TWENTY_SIX, .mcuPin = PIN_NOT_SET },
   };
+
+std::function<float()> get_temperature_interface();
+
   
-  
-  bool withPin(const InterconnectPin iPin, void (*callback)(unsigned))
+  bool withPin(const InterconnectPin iPin, void (*callback)(McuPin))
   {
       if (!iPin || iPin >= InterconnectPin::IP_COUNT)
       {
@@ -188,14 +192,14 @@ const FdmButton buttons[FdmButtonType::FBT_COUNT] = {
   
   void setupSensorPins()
   {
-      withPin(tempSensor.sensePin, [](unsigned mcuPin) { pinMode(mcuPin, OUTPUT); });
+      withPin(tempSensor.sensePin, [](McuPin mcuPin) { pinMode(mcuPin, OUTPUT); });
   
-      auto setPinAsInput = [](unsigned mcuPin) { pinMode(mcuPin, INPUT); };
+      auto setPinAsInput = [](McuPin mcuPin) { pinMode(mcuPin, INPUT); };
   
       withPin(encoder.signalPinA, setPinAsInput);
       withPin(encoder.signalPinC, setPinAsInput);
   
-      auto writeHigh = [](unsigned mcuPin) { digitalWrite(mcuPin, HIGH); };
+      auto writeHigh = [](McuPin mcuPin) { digitalWrite(mcuPin, HIGH); };
   
       withPin(encoder.signalPinA, writeHigh);
       withPin(encoder.signalPinC, writeHigh);
@@ -203,7 +207,7 @@ const FdmButton buttons[FdmButtonType::FBT_COUNT] = {
   
   void setupKeypadPins()
   {
-      auto setPinAsInputPullup = [](unsigned mcuPin) { pinMode(mcuPin, INPUT_PULLUP); };
+      auto setPinAsInputPullup = [](McuPin mcuPin) { pinMode(mcuPin, INPUT_PULLUP); };
   
       for (unsigned i = 0; i < FdmButtonType::FBT_COUNT; i++)
       {
