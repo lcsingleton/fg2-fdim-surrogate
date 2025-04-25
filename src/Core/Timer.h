@@ -1,28 +1,51 @@
 #ifndef TIMER_H
 #define TIMER_H
-#include <list>
 #include <functional>
-namespace Core {
 
+namespace Core
+{
+
+using milliseconds = uint32_t;
+
+template<milliseconds IntervalMs>
 class Timer
 {
-	const unsigned intervalMs;
-	const std::function<void()> handler;
+	using Handler = const std::function<void()>;
+	using intervalMs = IntervalMs;
+
+	milliseconds nextExecuteMs;
+
+	Handler handler;
+
 public:
-	Timer(unsigned long intervalMs, std::function<void()> handler);
+	Timer( Handler handler, milliseconds nextExecuteMs = IntervalMs ) :
+		handler( handler ), nextExecuteMs( nextExecuteMs )
+	{}
 
-	bool ShouldExecute() const;
+	bool ShouldExecute( milliseconds currentMs ) const { return currentMs >= nextExecuteMs; }
 
-	void Tick( unsigned long elaspedMs );
+	void ExecuteHandler() { handler(); }
 
-	unsigned long GetTfDeltaMs(unsigned long currentMs);
+	void Tick( const milliseconds currentMs )
+	{
+		if( ShouldExecute( currentMs ) )
+		{
+			ExecuteHandler();
+			ResetTimer( currentMs );
+		}
+	}
 
-	void TickTimerFlags();
-
-	bool ShouldExecute(short tfAttribute);
-
-	void ResetTimerFlags();
+	void ResetTimer( const milliseconds currentMs )
+	{
+		// May cause overflow (once every 49.7 days), but currentMs will overflow at the same time
+		nextExecuteMs += intervalMs;
+	}
 };
+
+
+void InitTimerSystem();
 }
+}
+
 
 #endif // TIMER_H

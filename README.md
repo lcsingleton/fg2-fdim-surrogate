@@ -109,15 +109,19 @@ FE 00 00 00 00 00 00 00
 40 00 00 00 FF 00 00 00 = RECIRC
 20 00 00 00 FF 00 00 00 = R DEMIST
 80 00 00 00 FF 00 00 00 = ac
+
 00 02 00 00 FF 00 00 00 = F DEMIST
 00 04 00 00 FF 00 00 00 = FAN-
 00 08 00 00 FF 00 00 00 = FAN+
 00 10 00 00 FF 00 00 00 = HVAC OFF
 00 20 00 00 FF 00 00 00 = AUTO
 00 80 00 00 FF 00 00 00 = VENT
+
 00 00 01 00 FF 00 00 00 =  HAZZARD
+
 00 00 40 00 FF 00 00 00 = TEMP-
 00 00 80 00 FF 00 00 00 = TEMP+
+
 00 00 00 04 FF 00 00 00 = UNLOCK
 00 00 00 40 FF 00 00 00 = LOCK
 00 00 00 10 FF 00 00 00 = DSC
@@ -167,7 +171,7 @@ Follow items are suspected to be pat of 0x2FC, but aren't emitted after the blac
 
 ## Safety
 
-- Hazzard Lights
+- Hazard Lights
 - Front Demister
 - Rear Demist
 - Central Locking

@@ -1,67 +1,49 @@
-#include "Timer.h"
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/cm3/nvic.h>
+#include <libopencm3/cm3/systick.h>
 
-#include <utility>
+#include "Core/Timer.h"
 
-using namespace Core;
 
-Timer::Timer( unsigned long intervalMs, std::function<void()> handler): intervalMs(intervalMs), handler(std::move(handler)) {}
 
-bool Timer::ShouldExecute() const { return true; }
 
-void Timer::Tick( unsigned long elaspedMs )
+/* milliseconds since boot */
+static volatile Core::milliseconds uptimeMs;
+
+/* Called when systick fires */
+void sys_tick_handler( void ) { system_millis++; }
+
+/* simple sleep for delay milliseconds */
+void milli_sleep( uint32_t delay )
 {
-	this->timer -= elaspedMs;
-
-	auto ms = millis();
-	auto deltaMs = getTfDeltaMs( ms );
-
-
-	tf._25ms -= deltaMs;
+	Core::milliseconds wake = system_millis + delay;
+	while( wake > system_millis )
+	{
+		continue;
+	}
 }
 
-unsigned long Timer::GetTfDeltaMs( unsigned long currentMs )
+/* Getter function for the current time */
+Core::milliseconds GetUptimeMs( void ) { return uptimeMs; }
+
+/*
+ * clock_setup(void)
+ *
+ * This function sets up both the base board clock rate
+ * and a 1khz "system tick" count. The SYSTICK counter is
+ * a standard feature of the Cortex-M series.
+ */
+void Core::InitTimerSystem( void )
 {
-	auto distanceToUnderflow = 1l - tf.lastMs;
+	/* Base board frequency, set to 168Mhz */
+	rcc_clock_setup_pll( &rcc_hse_8mhz_3v3[ RCC_CLOCK_3V3_168MHZ ] );
 
+	/* clock rate / 168000 to get 1mS interrupt rate */
+	systick_set_reload( 168000 );
+	systick_set_clocksource( STK_CSR_CLKSOURCE_AHB );
+	systick_counter_enable();
 
-	// Check if currentMs has overflowed since lastMs was set
-	if( currentMs < tf.lastMs )
-	{
-		Serial.println( "Overflow since last exection" );
-		// overflow has happened
-		auto lastToOverflowMs = -1l - tf.lastMs;
-		return lastToOverflowMs + currentMs;
-	}
-
-	auto diff = currentMs - tf.lastMs;
-	return diff;
+	/* this done last */
+	systick_interrupt_enable();
 }
-
-bool Timer::ShouldExecute( short tfAttribute ) { return tfAttribute <= 0; }
-
-void Timer::ResetTimerFlags()
-{
-	auto ms = millis();
-	auto deltaMs = getTfDeltaMs( ms );
-
-	if( shouldExecute( tf._25ms ) )
-	{
-		tf._25ms = 25 - deltaMs;
-	}
-	if( shouldExecute( tf._100ms ) )
-	{
-		tf._100ms = 100 - deltaMs;
-	}
-	if( shouldExecute( tf._125ms ) )
-	{
-		tf._125ms = 125 - deltaMs;
-	}
-	if( shouldExecute( tf._500ms ) )
-	{
-		tf._500ms = 500 - deltaMs;
-	}
-	if( shouldExecute( tf._10000ms ) )
-	{
-		tf._10000ms = 10000 - deltaMs;
-	}
-}
+*/

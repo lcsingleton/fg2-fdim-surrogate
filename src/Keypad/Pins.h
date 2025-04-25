@@ -33,34 +33,34 @@ enum InterconnectPin
 	IP_COUNT,
 };
 
-const char* InterconnectPinDisplayNameMap[InterconnectPin::IP_COUNT] = {
+const char* InterconnectPinDisplayNameMap[ InterconnectPin::IP_COUNT ] = {
 
-  "LED+", // LED +
-  "LED-", // LED -
-  "NC", // NC
-  "NC", // NC
-  "FIVE",
-  "SIX",
-  "SEVEN",
-  "EIGHT",
-  "NINE",
-  "TEN",
-  "ELEVEN",
-  "TWELVE",
-  "THIRTEEN",
-  "FOURTEEN",
-  "FIFTEEN",
-  "SIXTEEN",
-  "SEVENTEEN",
-  "EIGHTEEN",
-  "NINETEEN",
-  "TWENTY",
-  "TWENTY_ONE",
-  "ROTARY_ENCODER_A",
-  "ROTARY_ENCODER_C",
-  "TEMP_SENSE",
-  "GROUND",
-  "ROTARY_ENCODER_B",
+	"LED+", // LED +
+	"LED-", // LED -
+	"NC", // NC
+	"NC", // NC
+	"FIVE",
+	"SIX",
+	"SEVEN",
+	"EIGHT",
+	"NINE",
+	"TEN",
+	"ELEVEN",
+	"TWELVE",
+	"THIRTEEN",
+	"FOURTEEN",
+	"FIFTEEN",
+	"SIXTEEN",
+	"SEVENTEEN",
+	"EIGHTEEN",
+	"NINETEEN",
+	"TWENTY",
+	"TWENTY_ONE",
+	"ROTARY_ENCODER_A",
+	"ROTARY_ENCODER_C",
+	"TEMP_SENSE",
+	"GROUND",
+	"ROTARY_ENCODER_B",
 };
 
-#endif
+#endif // PINS_H

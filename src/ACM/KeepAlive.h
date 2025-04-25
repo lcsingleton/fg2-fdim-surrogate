@@ -1,5 +1,5 @@
-#ifndef ICCKEEPALIVE_H
-#define ICCKEEPALIVE_H
+#ifndef ACM_KEEPALIVE_H
+#define ACM_KEEPALIVE_H
 
 #include "Core/Can.h"
 
@@ -33,4 +33,4 @@ void outputKeepAlive()
 }
 
 
-#endif
+#endif // ACM_KEEPALIVE_H

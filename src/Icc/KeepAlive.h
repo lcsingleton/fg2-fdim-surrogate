@@ -1,9 +1,8 @@
-#ifndef ICCKEEPALIVE_H
-#define ICCKEEPALIVE_H
+#ifndef ICC_KEEPALIVE_H
+#define ICC_KEEPALIVE_H
 
 #include <cstdint>
 
-#include "../Core/Can.h"
 #include "Core/Can.h"
 
 namespace Icc {
@@ -33,4 +32,5 @@ void outputKeepAlive()
 }
 
 }
-#endif
+
+#endif // ICC_KEEPALIVE_H

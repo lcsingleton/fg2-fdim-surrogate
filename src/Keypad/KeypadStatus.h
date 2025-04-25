@@ -1,6 +1,5 @@
 #ifndef KEYPADSTATUS_H
 #define KEYPADSTATUS_H
-#include "Register/Types.hpp"
 
 
 struct CanMediaStatus
@@ -190,40 +189,40 @@ const int encoderStates[4][4] = {
 	{  0,  1, -1,  0 },
    };
    
-   void readRotaryState()
-   {
+void readRotaryState()
+{
    
-	   const auto lowBitPin = pinMap[encoder.signalPinA].mcuPin;
-	   const auto highBitPin = pinMap[encoder.signalPinC].mcuPin;
+	const auto lowBitPin = pinMap[encoder.signalPinA].mcuPin;
+	const auto highBitPin = pinMap[encoder.signalPinC].mcuPin;
    
-	   auto state = (digitalRead(highBitPin) << 1) | digitalRead(lowBitPin);
+	auto state = (digitalRead(highBitPin) << 1) | digitalRead(lowBitPin);
    
-	   //count += encoderStates[prevState][state];
-	   //if (state != prevState)
-	   //{
-	   //	Serial.print(state, DEC);
-	   //	Serial.print(' ');
-	   //	Serial.print(prevState, DEC);
-	   //	Serial.print(' ');
-	   //	Serial.println(count, DEC);
-	   //}
-   }
+	//count += encoderStates[prevState][state];
+	//if (state != prevState)
+	//{
+	//	Serial.print(state, DEC);
+	//	Serial.print(' ');
+	//	Serial.print(prevState, DEC);
+	//	Serial.print(' ');
+	//	Serial.println(count, DEC);
+	//}
+}
    
-   const auto ntcValue = 10000u;
-   const auto scalar = 639.5, exponent = -0.1332, offset = -162.5;
+const auto ntcValue = 10000u;
+const auto scalar = 639.5, exponent = -0.1332, offset = -162.5;
    
    
-   void readTempState()
-   {
-	   withPin(tempSensor.sensePin, [](unsigned mcuPin) {
+void readTempState()
+{
+	withPin(tempSensor.sensePin, [](unsigned mcuPin) {
    
-		   auto ntcVoltage = (analogRead(mcuPin) * 5.0) / 1023.0;
-		   auto ntcResistance = ntcValue * ((5.0 / ntcVoltage) - 1);
-		   // auto tempKelvin = a * pow(ntcResistance, exponent) + offset;
+		auto ntcVoltage = (analogRead(mcuPin) * 5.0) / 1023.0;
+		auto ntcResistance = ntcValue * ((5.0 / ntcVoltage) - 1);
+		// auto tempKelvin = a * pow(ntcResistance, exponent) + offset;
    
-		   // TODO do something with the temp now that we've calculated it.
+		// TODO do something with the temp now that we've calculated it.
    
-		   });
-		}   
+		});
+	}   
 
-#endif
+#endif // KEYPADSTATUS_H

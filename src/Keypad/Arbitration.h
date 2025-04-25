@@ -21,4 +21,4 @@ namespace Keypad { namespace Arbitration
 	};
 }}
 
-#endif
+#endif // ARBITRATION_H
