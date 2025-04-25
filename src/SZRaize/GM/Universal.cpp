@@ -4,12 +4,9 @@
 
 #include "Universal.h"
 
-namespace SZRaise { namespace GM {
+using namespace SZRaise::GM;
 
 Universal::Universal()
 {
 
 }
-
-} // GM
-} // RaizeSC

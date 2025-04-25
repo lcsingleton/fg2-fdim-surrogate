@@ -10,25 +10,32 @@ include(cmake/libopencm3.cmake)
 
 set(
 	APP_SRCS
-		src/Main.cpp
-		src/Main.h
+		src/Acm/KeepAlive.cpp
+		src/Acm/KeepAlive.h
 
 		src/Core/BitFieldMember.h
+		src/Core/Can.cpp
 		src/Core/Can.h
 		src/Core/Registers.h
 		src/Core/Timer.cpp
 		src/Core/Timer.h
 
+		src/Icc/KeepAlive.cpp
 		src/Icc/KeepAlive.h
 
 		src/Keypad/Buttons.h
+		src/Keypad/HvacStatus.cpp
 		src/Keypad/HvacStatus.h
-		src/Keypad/KeypadStatus.h
 		src/Keypad/KeypadStatus.cpp
+		src/Keypad/KeypadStatus.h
 		src/Keypad/Pins.h
 
 		src/SZRaize/GM/Universal.cpp
 		src/SZRaize/GM/Universal.h
+
+		src/Main.cpp
+		src/Main.h
+
 )
 
 add_executable(

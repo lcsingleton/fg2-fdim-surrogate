@@ -1,12 +1,14 @@
 #ifndef KEYPADSTATUS_H
 #define KEYPADSTATUS_H
 
+namespace Keypad
+{
 
 struct CanMediaStatus
 {
 	const uint32_t arbitrationId = 0x2FC;
-	unsigned short bytes[8] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-
+	unsigned short bytes[ 8 ] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+};
 
 struct MediaState
 {
@@ -24,9 +26,6 @@ struct MediaState
 	bool rotaryCounterClockwise = false;
 	auto scan = false;
 };
-
-
-
 
 
 //
@@ -182,47 +181,48 @@ void readInputState()
 
 }*/
 
-const int encoderStates[4][4] = {
-	{  0, -1,  1,  0 },
-	{  1,  0,  0, -1 },
-	{ -1,  0,  0,  1 },
-	{  0,  1, -1,  0 },
-   };
-   
+const int encoderStates[ 4 ][ 4 ] = {
+	{ 0, -1, 1, 0 },
+	{ 1, 0, 0, -1 },
+	{ -1, 0, 0, 1 },
+	{ 0, 1, -1, 0 },
+};
+
 void readRotaryState()
 {
-   
-	const auto lowBitPin = pinMap[encoder.signalPinA].mcuPin;
-	const auto highBitPin = pinMap[encoder.signalPinC].mcuPin;
-   
-	auto state = (digitalRead(highBitPin) << 1) | digitalRead(lowBitPin);
-   
-	//count += encoderStates[prevState][state];
-	//if (state != prevState)
+
+	const auto lowBitPin = pinMap[ encoder.signalPinA ].mcuPin;
+	const auto highBitPin = pinMap[ encoder.signalPinC ].mcuPin;
+
+	auto state = ( digitalRead( highBitPin ) << 1 ) | digitalRead( lowBitPin );
+
+	// count += encoderStates[prevState][state];
+	// if (state != prevState)
 	//{
 	//	Serial.print(state, DEC);
 	//	Serial.print(' ');
 	//	Serial.print(prevState, DEC);
 	//	Serial.print(' ');
 	//	Serial.println(count, DEC);
-	//}
+	// }
 }
-   
+
 const auto ntcValue = 10000u;
 const auto scalar = 639.5, exponent = -0.1332, offset = -162.5;
-   
-   
+
+
 void readTempState()
 {
-	withPin(tempSensor.sensePin, [](unsigned mcuPin) {
-   
-		auto ntcVoltage = (analogRead(mcuPin) * 5.0) / 1023.0;
-		auto ntcResistance = ntcValue * ((5.0 / ntcVoltage) - 1);
-		// auto tempKelvin = a * pow(ntcResistance, exponent) + offset;
-   
-		// TODO do something with the temp now that we've calculated it.
-   
-		});
-	}   
+	withPin( tempSensor.sensePin,
+			 []( unsigned mcuPin )
+			 {
+				 auto ntcVoltage = ( analogRead( mcuPin ) * 5.0 ) / 1023.0;
+				 auto ntcResistance = ntcValue * ( ( 5.0 / ntcVoltage ) - 1 );
+				 // auto tempKelvin = a * pow(ntcResistance, exponent) + offset;
+
+				 // TODO do something with the temp now that we've calculated it.
+			 } );
+}
+} // namespace Keypad
 
 #endif // KEYPADSTATUS_H

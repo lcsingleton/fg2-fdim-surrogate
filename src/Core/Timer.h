@@ -42,6 +42,7 @@ public:
 	}
 };
 
+milliseconds GetSysUptimeMs() const;
 
 void InitTimerSystem();
 }

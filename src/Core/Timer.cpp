@@ -1,14 +1,12 @@
 #include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/f4/timer.h>
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/cm3/systick.h>
 
 #include "Core/Timer.h"
 
-
-
-
 /* milliseconds since boot */
-static volatile Core::milliseconds uptimeMs;
+static volatile Core::milliseconds sysUptimeMs;
 
 /* Called when systick fires */
 void sys_tick_handler( void ) { system_millis++; }
@@ -24,7 +22,7 @@ void milli_sleep( uint32_t delay )
 }
 
 /* Getter function for the current time */
-Core::milliseconds GetUptimeMs( void ) { return uptimeMs; }
+Core::milliseconds GetSysUptimeMs( ) const { return sysUptimeMs; }
 
 /*
  * clock_setup(void)
@@ -46,4 +44,3 @@ void Core::InitTimerSystem( void )
 	/* this done last */
 	systick_interrupt_enable();
 }
-*/

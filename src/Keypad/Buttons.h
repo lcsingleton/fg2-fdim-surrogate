@@ -218,6 +218,47 @@ void setupKeypadPins()
 		withPin( fdmButton.signalPin, setPinAsInputPullup );
 	}
 }
+
+
+template<typename ReprType, ReprType DefaultValue = 0x00, unsigned short ExtBitOffset = 0x00,
+		 unsigned short ExtBitMask = 0xFF>
+struct DataPoint
+{
+	using bitMask = ExtBitMask;
+	using bitOffset = ExtBitOffset;
+	using defaultValue = DefaultValue;
+
+	ReprType value;
+
+	constexpr DataPoint() : value( defaultValue ) {}
+
+	operator ReprType() const { return value; }
+
+	operator=( ReprType newValue ){ value = newValue };
+
+	inline operator unsigned long() const { return ( bitMask & value ) << bitOffset; }
+
+	inline unsigned long operator|( const unsigned long &other ) const
+	{
+		return static_cast<unsigned long>( this ) | other;
+	};
+
+	// template<typename OtherDataPoint>
+	// unsigned long operator|( const OtherDataPoint &rhs ) const
+	//{
+	//	return static_cast<unsigned long>( this ) | static_cast<unsigned long>( rhs );
+	// }
+};
+
+enum ButtonState
+{
+	BS_RELEASED = 0,
+	BS_PRESSED = 1,
+};
+
+template<unsigned short BitOffset>
+using Button = DataPoint<ButtonState, ButtonState::BS_RELEASED, BitOffset, 1>;
+
 }
 
 #endif // BUTTONS_H
