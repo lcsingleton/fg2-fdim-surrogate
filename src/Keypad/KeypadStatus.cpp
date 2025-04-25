@@ -195,7 +195,7 @@ const int encoderStates[ 4 ][ 4 ] = {
 	{ 0, 1, -1, 0 },
 };
 
-void readRotaryState()
+void ReadRotaryState()
 {
 
 	const auto lowBitPin = pinMap[ encoder.signalPinA ].mcuPin;
@@ -218,7 +218,7 @@ const auto ntcValue = 10000u;
 const auto scalar = 639.5, exponent = -0.1332, offset = -162.5;
 
 
-void readTempState()
+void ReadTempState()
 {
 	withPin( tempSensor.sensePin,
 			 []( unsigned mcuPin )
