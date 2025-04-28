@@ -3,3 +3,4 @@ docs-src
 CMakeFiles
 CMakeCache.txt
 CMakeUserPresets.json
+out

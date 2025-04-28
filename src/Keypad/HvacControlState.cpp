@@ -1,42 +1,12 @@
 #include "Core/Can.h"
 
-#include "Keypad/HvacStatus.h"
+#include "Keypad/HvacControlState.h"
 #include "Keypad/Buttons.h"
 
-using namespace Keypad;
+using namespace Keypad::HvacControlState;
 using Core::Can;
 
-struct HvacStatus
-{
-	// Byte 0
-	Button<31> ac;
-	Button<30> airSource;
-	Button<29> rearDemist;
-
-	// Byte 1
-	Button<27> vent;
-	Button<25> hvacAuto;
-	Button<24> hvacOff;
-	Button<23> fanIncrease;
-	Button<22> fanReduce;
-	Button<21> frontDemist;
-
-	// Byte 2
-	Button<15> tempIncrease;
-	Button<14> tempReduce;
-	Button<8> hazard;
-
-	// Byte 3
-	Button<6> lock;
-	Button<5> interiorLight;
-	Button<4> dynamicStabilityControl;
-	Button<2> unlock;
-
-	// Byte 4
-	DataPoint<unsigned char, 0, 3> cabinTemp;
-};
-
-struct CanHvacStatus
+struct CanHvacControlState
 {
 	const uint32_t arbitrationId = 0x407;
 	union
@@ -59,9 +29,9 @@ struct CanHvacStatus
 	}
 };
 
-void OutputHvacStatus()
+void OutputHvacControlState()
 {
-	auto result = Can::Send( CanHvacStatus{ HvacStatus{} } );
+	auto result = Can::Send( CanHvacControlState{ HvacStatus{} } );
 
 
 	if( result != Can::SendResult::SEND_FAILED )

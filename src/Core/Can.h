@@ -1,5 +1,5 @@
-#ifndef CAN_H
-#define CAN_H
+#ifndef CORE_CAN_H
+#define CORE_CAN_H
 
 namespace Core
 {
@@ -14,18 +14,24 @@ enum SendResult
 	SEND_SUCCESS_QUEUE_3,
 };
 
-SendResult SendPayload( uint32_t arbitrationId, const uint8_t data[ 8 ] );
-
-template<typename Type>
-SendResult Send( const Type message )
+struct MsCanMessage
 {
-	return SendPayload( message.arbitationId, message.data );
+	uint32_t arbitrationId;
+	uint8_t data;
 }
 
-void SetupCanComms();
+SendResult SendPayload( uint32_t arbitrationId, const uint8_t data[ 8 ] );
+
+template<MsCanMessage canMessage>
+SendResult Send( const MsCanMessage message )
+{
+	return SendPayload( message.arbitrationId, message.data );
+}
+
+void InitCanSystem();
 
 }
 } // namespace Can
 } // namespace Core
 
-#endif // CAN_H
+#endif // CORE_CAN_H

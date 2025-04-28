@@ -16,7 +16,6 @@ set(
 		src/Core/BitFieldMember.h
 		src/Core/Can.cpp
 		src/Core/Can.h
-		src/Core/Registers.h
 		src/Core/Timer.cpp
 		src/Core/Timer.h
 
@@ -24,11 +23,17 @@ set(
 		src/Icc/KeepAlive.h
 
 		src/Keypad/Buttons.h
-		src/Keypad/HvacStatus.cpp
-		src/Keypad/HvacStatus.h
+		src/Keypad/CabinTempSensor.cpp
+		src/Keypad/CabinTempSensor.h
+		src/Keypad/HvacControlState.cpp
+		src/Keypad/HvacControlState.h
 		src/Keypad/KeypadStatus.cpp
 		src/Keypad/KeypadStatus.h
+		src/Keypad/MediaControlState.cpp
+		src/Keypad/MediaControlState.h
 		src/Keypad/Pins.h
+		src/Keypad/RotaryDial.cpp
+		src/Keypad/RotaryDial.h
 
 		src/SZRaize/GM/Universal.cpp
 		src/SZRaize/GM/Universal.h

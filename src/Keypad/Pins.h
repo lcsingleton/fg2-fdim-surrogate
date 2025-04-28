@@ -1,5 +1,11 @@
-#ifndef PINS_H
-#define PINS_H
+#ifndef KEYPAD_PINS_H
+#define KEYPAD_PINS_H
+
+namespace Keypad
+{
+	namespace Pins
+	{
+
 
 enum InterconnectPin
 {
@@ -63,4 +69,7 @@ const char* InterconnectPinDisplayNameMap[ InterconnectPin::IP_COUNT ] = {
 	"ROTARY_ENCODER_B",
 };
 
-#endif // PINS_H
+} // namespace Pins
+} // namespace Keypad
+
+#endif // KEYPAD_PINS_H

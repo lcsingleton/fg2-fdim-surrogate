@@ -1,7 +1,8 @@
-#ifndef CAN_H
-#define CAN_H
+// CAN System
+ #include <libopencm3/stm32/can.h>
 
-#include <libopencm3/stm32/can.h>
+// Register definitions for the MCU
+// #include <Chip/Unknown/STMicro/STM32F41x/CAN1.hpp>
 
 #include "Core/Can.h"
 
@@ -27,8 +28,7 @@ SendResult SendPayload( unin32_t arbitrationId, uint8_t& data[ 8 ] ) {
 	return SendResult::SEND_FAILED;
 }
 
-
-void SetupCanComms()
+void InitCanSystem()
 {
 	// Reset the inbuilt CAN1 Can Controller
 	can_reset( canPort );
@@ -40,9 +40,9 @@ void SetupCanComms()
 							false, // Keep the most recent CAN frames when FIFO is full
 							false, // Send the most recent CAN frames when FIFO is full
 							CAN_BTR_SJW_1TQ, // Resync time quanta jump width
-							CAN_BTR_TS1_6TQ, // Time Segment 1 Quanta width
-							CAN_BTR_TS2_1TQ, // Time Segment 2 Quanta width
-							99, // Baud Rate prescalar - register values are off by one
+							CAN_BTR_TS1_10TQ, // Time Segment 1 Quanta width
+							CAN_BTR_TS2_5TQ, // Time Segment 2 Quanta width
+							79, // Baud Rate prescalar - register values are off by one
 							false, // Disable transmission loopback
 							false // not silent ??
 	);
@@ -57,6 +57,3 @@ void SetupCanComms()
 	can_fifo_release( canPort, 0 );
 	can_fifo_release( canPort, 1 );
 }
-} // namespace Can
-} // namespace Core
-#endif // CAN_H

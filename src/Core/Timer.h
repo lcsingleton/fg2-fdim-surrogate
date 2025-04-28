@@ -1,8 +1,10 @@
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef CORE_TIMER_H
+#define CORE_TIMER_H
 #include <functional>
 
 namespace Core
+{
+namespace Timer
 {
 
 using milliseconds = uint32_t;
@@ -45,8 +47,9 @@ public:
 milliseconds GetSysUptimeMs() const;
 
 void InitTimerSystem();
-}
-}
+
+} // namespace Timer
+} // namespace Core
 
 
-#endif // TIMER_H
+#endif // CORE_TIMER_H
