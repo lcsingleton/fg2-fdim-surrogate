@@ -2,18 +2,17 @@
 #include "Core/Can.h"
 
 using namespace Keypad::MediaControlState;
-using Core;
 
 struct CanMediaControlState
 {
-	const uint32_t arbitrationId = 0x2FC;
-	const unsigned short words[ 8 ] = { 0xEE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+	const unsigned int arbitrationId = 0x2FC;
+	const unsigned char data[ 8 ] = { 0xEE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 };
 
 
-void MediaControlState::OutputMediaControlState()
+void OutputMediaControlState()
 {
-	auto result = Can::Send( CanMediaControlState{} );
+	auto result = Core::Can::Send( CanMediaControlState{} );
 
 	if( result >= 0 )
 	{

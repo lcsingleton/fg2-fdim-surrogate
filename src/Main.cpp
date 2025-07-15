@@ -1,34 +1,30 @@
 #include "Main.h"
 
-using Core::Timer;
 
-
-const auto allTimers[ 5 ] = {
+const Core::Timer::IntervalTimer allTimers[ 6 ] = {
 	// Update the internal state of the Keypad every 25 milliseconds
-	Timer<25>{ []() { Keypad::UpdateKeypadState(); } },
+	Core::Timer::IntervalTimer{ 25, []() { Keypad::KeypadState::UpdateKeypadState(); } },
 
 	// Output the CAN with the new state of the Media Key States every 100ms
-	Timer<100>{ []() { Keypad::MediaControlState::OutputMediaControlState(); } },
+	Core::Timer::IntervalTimer{ 100, []() { Keypad::MediaControlState::OutputMediaControlState(); } },
 
 	// Output the CAN with the new state of the Media Key States every 1250ms
-	Timer<125>{ []() { Icc::KeepAlive::OutputKeepAlive(); } },
+	Core::Timer::IntervalTimer{ 125, []() { Icc::KeepAlive::OutputKeepAlive(); } },
 
-	
 	// Output the CAN with the new state of the ACM Keepalive every 100ms
-	Timer<125>{ []() { Acm::KeepAlive::OutputKeepAlive(); } },
-
+	Core::Timer::IntervalTimer{ 125, []() { Acm::KeepAlive::OutputKeepAlive(); } },
 
 	// Output the CAN with the new state of the Media Key States every 500ms
-	Timer<500>{ []() { Keypad::HvacControlState::OutputHvacControlState(); } },
+	Core::Timer::IntervalTimer{ 500, []() { Keypad::HvacControlState::OutputHvacControlState(); } },
 
 	// Update the internal state of the Cabin Temp Sensor every 10 seconds
-	Timer<10000>{ []() { Keypad::CabinTempSensor::UpdateCabinTempSensor } },
-	
+	Core::Timer::IntervalTimer{ 10000, []() { Keypad::CabinTempSensor::UpdateCabinTempSensor(); } },
+
 };
 
-void InitGpio () {  }
-void InitGpio () {  }
-void InitUsart (){ 
+void InitGpio() {}
+void InitUsart()
+{
 	// initialize serial to 38.4kbps - this is the speed that head units listen at
 	// Serial.begin( 115200 );
 }
@@ -42,15 +38,12 @@ void Setup()
 
 	Keypad::RotaryDial::InitRotaryDialSystem();
 
-	/*	
+	/*
 	usart_setup();
 	clock_setup();
 	gpio_setup();
 	can_setup();
 	*/
-
-
-
 }
 
 
@@ -58,16 +51,18 @@ void Loop()
 {
 	for( auto timer: allTimers )
 	{
-		timer.Tick( Timer::GetSysUptimeMs() );
+		timer.Tick( Core::Timer::GetSysUptimeMs() );
 	}
 }
 
 
-void main()
+int main()
 {
 	Setup();
 
 	Loop();
+
+	return 1;
 }
 
 

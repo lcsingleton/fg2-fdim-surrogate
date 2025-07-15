@@ -1,18 +1,17 @@
-#include "Icc/KeepAlive.h"
+#include "KeepAlive.h"
 #include "Core/Can.h"
 
 using namespace Icc::KeepAlive;
-using Core;
 
 struct IccKeepAlive
 {
-	const uint32_t arbitrationId = 0x425;
-	const unsigned short words[ 8 ] = { 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+	const unsigned int arbitrationId = 0x425;
+	const unsigned char data[ 8 ] = { 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 };
 
 void OutputKeepAlive()
 {
-	auto result = Can::Send( IccKeepAlive{} );
+	auto result = Core::Can::Send( IccKeepAlive{} );
 
 	if( result >= 0 )
 	{

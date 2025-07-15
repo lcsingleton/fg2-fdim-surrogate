@@ -3,9 +3,8 @@
 
 namespace Keypad
 {
-	namespace Pins
-	{
-
+namespace Pins
+{
 
 enum InterconnectPin
 {
@@ -39,7 +38,7 @@ enum InterconnectPin
 	IP_COUNT,
 };
 
-const char* InterconnectPinDisplayNameMap[ InterconnectPin::IP_COUNT ] = {
+const char *InterconnectPinDisplayNameMap[ InterconnectPin::IP_COUNT ] = {
 
 	"LED+", // LED +
 	"LED-", // LED -

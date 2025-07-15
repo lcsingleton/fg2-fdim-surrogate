@@ -2,17 +2,16 @@
 #include "Core/Can.h"
 
 using namespace Acm::KeepAlive;
-using Core;
 
 struct AcmKeepAlive
 {
-	const uint32_t arbitrationId = 0x425;
-	const unsigned short bytes[ 8 ] = { 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+	const unsigned int arbitrationId = 0x425;
+	const unsigned char data[ 8 ] = { 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 };
 
 void OutputKeepAlive()
 {
-	auto result = Can::Send<AcmKeepAlive>( AcmKeepAlive{} );
+	auto result = Core::Can::Send<AcmKeepAlive>( AcmKeepAlive{} );
 
 	if( result >= 0 )
 	{

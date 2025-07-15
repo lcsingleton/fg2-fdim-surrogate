@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.16.0)
+#set(CMAKE_CROSS_COMPILING 1)
+#set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_C_COMPILER_WORKS TRUE)
+SET(CMAKE_CXX_COMPILER_WORKS TRUE)
 
 project(
 	icc_surrogate
-	LANGUAGES CXX C ASM
+	LANGUAGES CXX C
 )
-
-include(cmake/libopencm3.cmake)
-#include(cmake/kvasir.cmake)
 
 set(
 	APP_SRCS
@@ -27,8 +28,8 @@ set(
 		src/Keypad/CabinTempSensor.h
 		src/Keypad/HvacControlState.cpp
 		src/Keypad/HvacControlState.h
-		src/Keypad/KeypadStatus.cpp
-		src/Keypad/KeypadStatus.h
+		src/Keypad/KeypadState.cpp
+		src/Keypad/KeypadState.h
 		src/Keypad/MediaControlState.cpp
 		src/Keypad/MediaControlState.h
 		src/Keypad/Pins.h
@@ -48,14 +49,32 @@ add_executable(
 		${APP_SRCS}
 )
 
+set(MCU_VARIANT stm32f412ret6 INTERNAL)
+
+set(OPENCM3_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/lib/libopencm3")
+
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/opencm3_utils.cmake)
+
+if(NOT DEFINED MCU_VARIANT)
+    message(FATAL_ERROR "ERROR: MCU_VARIANT not defined")
+endif()
+
+opencm3_add_stm32_library(${MCU_VARIANT})
+
+
+
+target_compile_definitions(icc_surrogate PUBLIC __ARM_ARCH_7EM__)
+
 target_include_directories(
 		icc_surrogate
 		PRIVATE lib/Kvasir/Lib
+		src
+		lib/libopencm3/include
 )
 
 add_dependencies(
 		icc_surrogate
-		libopencm3
+		opencm3_stm32f4
 )
 target_link_libraries(
 		icc_surrogate

@@ -16,21 +16,21 @@ enum SendResult
 
 struct MsCanMessage
 {
-	uint32_t arbitrationId;
-	uint8_t data;
-}
+	unsigned int arbitrationId;
+	unsigned char data;
+};
 
-SendResult SendPayload( uint32_t arbitrationId, const uint8_t data[ 8 ] );
+SendResult SendPayload( const unsigned int arbitrationId, const unsigned char data[ 8 ] );
 
-template<MsCanMessage canMessage>
-SendResult Send( const MsCanMessage message )
+template<typename CanMessage>
+SendResult Send( const CanMessage message )
 {
 	return SendPayload( message.arbitrationId, message.data );
 }
 
 void InitCanSystem();
 
-}
+
 } // namespace Can
 } // namespace Core
 

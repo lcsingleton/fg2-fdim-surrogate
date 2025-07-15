@@ -7,46 +7,35 @@ namespace Core
 namespace Timer
 {
 
-using milliseconds = uint32_t;
+using milliseconds = unsigned int;
 
-template<milliseconds IntervalMs>
-class Timer
+milliseconds GetSysUptimeMs();
+
+void InitTimerSystem();
+
+class IntervalTimer
 {
-	using Handler = const std::function<void()>;
-	using intervalMs = IntervalMs;
+	using Handler = std::function<void()>;
 
 	milliseconds nextExecuteMs;
 
-	Handler handler;
+	const milliseconds intervalMs;
+
+	const Handler handler;
 
 public:
-	Timer( Handler handler, milliseconds nextExecuteMs = IntervalMs ) :
-		handler( handler ), nextExecuteMs( nextExecuteMs )
-	{}
+	IntervalTimer( milliseconds IntervalMs, Handler handler );
 
-	bool ShouldExecute( milliseconds currentMs ) const { return currentMs >= nextExecuteMs; }
+	IntervalTimer( milliseconds IntervalMs, Handler handler, milliseconds nextExecuteMs );
 
-	void ExecuteHandler() { handler(); }
+	bool ShouldExecute( milliseconds currentMs ) const;
 
-	void Tick( const milliseconds currentMs )
-	{
-		if( ShouldExecute( currentMs ) )
-		{
-			ExecuteHandler();
-			ResetTimer( currentMs );
-		}
-	}
+	void ExecuteHandler();
 
-	void ResetTimer( const milliseconds currentMs )
-	{
-		// May cause overflow (once every 49.7 days), but currentMs will overflow at the same time
-		nextExecuteMs += intervalMs;
-	}
+	void Tick( const milliseconds currentMs );
+
+	void ResetTimer( const milliseconds currentMs );
 };
-
-milliseconds GetSysUptimeMs() const;
-
-void InitTimerSystem();
 
 } // namespace Timer
 } // namespace Core

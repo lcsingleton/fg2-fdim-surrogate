@@ -1,6 +1,6 @@
 #include "KeypadState.h"
 
-#include "Keypad/Buttons.h"
+#include "Buttons.h"
 
 using namespace Keypad::KeypadState;
 

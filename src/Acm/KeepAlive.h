@@ -8,7 +8,7 @@ namespace Acm
 namespace KeepAlive
 {
 
-void outputKeepAlive();
+void OutputKeepAlive();
 
 } // namespace KeepAlive
 } // namespace Acm
