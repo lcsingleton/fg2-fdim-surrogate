@@ -17,6 +17,8 @@ set(
 		src/Core/BitFieldMember.h
 		src/Core/Can.cpp
 		src/Core/Can.h
+		src/Core/Serial.cpp
+		src/Core/Serial.h
 		src/Core/Timer.cpp
 		src/Core/Timer.h
 

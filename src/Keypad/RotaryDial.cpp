@@ -15,10 +15,10 @@ const int encoderStates[ 4 ][ 4 ] = {
 void ReadRotaryState()
 {
 
-	const auto lowBitPin = pinMap[ encoder.signalPinA ].mcuPin;
-	const auto highBitPin = pinMap[ encoder.signalPinC ].mcuPin;
+	// const auto lowBitPin = pinMap[ encoder.signalPinA ].mcuPin;
+	// const auto highBitPin = pinMap[ encoder.signalPinC ].mcuPin;
 
-	auto state = ( digitalRead( highBitPin ) << 1 ) | digitalRead( lowBitPin );
+	// auto state = ( digitalRead( highBitPin ) << 1 ) | digitalRead( lowBitPin );
 
 	// count += encoderStates[prevState][state];
 	// if (state != prevState)

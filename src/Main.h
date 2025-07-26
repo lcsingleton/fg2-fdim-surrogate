@@ -3,6 +3,7 @@
 
 #include "Core/Timer.h"
 #include "Core/Can.h"
+#include "Core/Serial.h"
 #include "Acm/KeepAlive.h"
 #include "Icc/KeepAlive.h"
 #include "Keypad/CabinTempSensor.h"

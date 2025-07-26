@@ -44,21 +44,42 @@ void IntervalTimer::ResetTimer( const milliseconds currentMs )
 /* milliseconds since boot */
 static volatile milliseconds sysUptimeMs;
 
-/* Called when systick fires */
+/* Interrupt handler which is called when systick fires */
 void sys_tick_handler( void ) { sysUptimeMs++; }
 
 /* simple sleep for delay milliseconds */
-void milli_sleep( milliseconds delay )
+void Sleep( milliseconds delay )
 {
-	Core::Timer::milliseconds wake = sysUptimeMs + delay;
-	while( wake > sysUptimeMs )
+	Core::Timer::milliseconds wakeAt = sysUptimeMs + delay;
+	while( wakeAt > sysUptimeMs )
 	{
+		// Spin until wakeAt is 
 		continue;
 	}
 }
 
 /* Getter function for the current time */
 milliseconds GetSysUptimeMs() { return sysUptimeMs; }
+
+
+const rcc_clock_scale ClockConf50Mhz = {
+	/* 100MHz */
+	.pllm = 8,
+	.plln = 100,
+	.pllp = 2,
+	.pllq = 2,
+	.pllr = 2,
+	.pll_source = RCC_CFGR_PLLSRC_HSE_CLK,
+	.flash_config = 0,
+	.hpre = RCC_CFGR_HPRE_NODIV,
+	.ppre1 = RCC_CFGR_PPRE_DIV2,
+	.ppre2 = RCC_CFGR_PPRE_DIV2,
+	.voltage_scale = PWR_SCALE1,
+	.ahb_frequency  = 50000000,
+	.apb1_frequency = 25000000,
+	.apb2_frequency = 25000000,
+};
+
 
 /*
  * clock_setup(void)
@@ -69,11 +90,11 @@ milliseconds GetSysUptimeMs() { return sysUptimeMs; }
  */
 void InitTimerSystem()
 {
-	/* Base board frequency, set to 168Mhz */
-	rcc_clock_setup_pll( &rcc_hse_8mhz_3v3[ RCC_CLOCK_3V3_168MHZ ] );
+	/* Base board frequency, set to 50MHz - half the max for the STM32F412R */
+	rcc_clock_setup_pll( &ClockConf50Mhz );
 
-	/* clock rate / 168000 to get 1mS interrupt rate */
-	systick_set_reload( 168000 );
+	/* clock rate / 50000 to get 1mS interrupt rate */
+	systick_set_reload( 50000 );
 	systick_set_clocksource( STK_CSR_CLKSOURCE_AHB );
 	systick_counter_enable();
 

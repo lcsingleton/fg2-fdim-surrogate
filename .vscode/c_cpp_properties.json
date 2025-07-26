@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Windows",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/lib/libopencm3/include"
+            ],
+            "defines": [
+                "STM32F4",
+                "__ARM_ARCH_7EM__"
+            ],
+            "compilerPath": "arm-none-eabi-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-arm"
+        }
+    ],
+    "version": 4
+}
