@@ -256,3 +256,23 @@ Not sure
 
 Others?
 0x128 D5 is some kind of timer? possible speed related timer? i.e. trip computer, distance traveled or something?
+
+
+# Build
+sudo apt install stlink-tools
+
+# Debug
+sudo apt install gdb-multiarch
+sudo apt install net-tools
+
+sudo openocd -f /usr/share/openocd/scripts/interface/stlink-v2.cfg -f /usr/share/openocd/scripts/target/stm32f4x_stlink.cfg
+
+sudo netstat -tulpn | grep openocd
+
+gdb-multiarch ./blink-led.elf
+
+target extended-remote localhost:3333
+
+
+https://www.youtube.com/watch?v=_1u7IOnivnM
+https://www.youtube.com/watch?v=YEGKD6JQJyM
