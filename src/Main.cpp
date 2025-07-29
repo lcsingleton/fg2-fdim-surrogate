@@ -8,10 +8,10 @@ const Core::Timer::IntervalTimer allTimers[ 6 ] = {
 	// Output the CAN with the new state of the Media Key States every 100ms
 	Core::Timer::IntervalTimer{ 100, []() { Keypad::MediaControlState::OutputMediaControlState(); } },
 
-	// Output the CAN with the new state of the Media Key States every 1250ms
+	// Output the CAN with the ICC Keepalive every 125ms
 	Core::Timer::IntervalTimer{ 125, []() { Icc::KeepAlive::OutputKeepAlive(); } },
 
-	// Output the CAN with the new state of the ACM Keepalive every 100ms
+	// Output the CAN with the ACM Keepalive every 125ms
 	Core::Timer::IntervalTimer{ 125, []() { Acm::KeepAlive::OutputKeepAlive(); } },
 
 	// Output the CAN with the new state of the Media Key States every 500ms
