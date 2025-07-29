@@ -259,7 +259,13 @@ Others?
 
 
 # Build
-sudo apt install stlink-tools
+sudo apt install stlink-tools gcc-arm-none-eabi
+
+make
+
+# Deploy
+st-flash --reset write fg2-icc-surrogate.bin  0x8000000
+
 
 # Debug
 sudo apt install gdb-multiarch
@@ -273,6 +279,7 @@ gdb-multiarch ./blink-led.elf
 
 target extended-remote localhost:3333
 
-
+# Debugging
 https://www.youtube.com/watch?v=_1u7IOnivnM
+# Building and deploying
 https://www.youtube.com/watch?v=YEGKD6JQJyM
