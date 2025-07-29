@@ -63,7 +63,7 @@ milliseconds GetSysUptimeMs() { return sysUptimeMs; }
 
 
 const rcc_clock_scale ClockConf50Mhz = {
-	/* 100MHz */
+	/* 100MHz from 8MHz external crystal */
 	.pllm = 8,
 	.plln = 100,
 	.pllp = 2,
@@ -92,10 +92,12 @@ void InitTimerSystem()
 {
 	/* Base board frequency, set to 50MHz - half the max for the STM32F412R */
 	rcc_clock_setup_pll( &ClockConf50Mhz );
-
+	// Use the external 8MHz Oscillator
+	
 	/* clock rate / 50000 to get 1mS interrupt rate */
-	systick_set_reload( 50000 );
+	systick_set_reload( 49999 );
 	systick_set_clocksource( STK_CSR_CLKSOURCE_AHB );
+	systick_clear();
 	systick_counter_enable();
 
 	/* this done last */
