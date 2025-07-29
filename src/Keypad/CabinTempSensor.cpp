@@ -5,8 +5,10 @@ using namespace Keypad::CabinTempSensor;
 const auto ntcValue = 10000u;
 const auto scalar = 639.5, exponent = -0.1332, offset = -162.5;
 
-void UpdateCabinTempSensor();
+void UpdateCabinTempSensor()
+{
 
+	/*
 	withPin( tempSensor.sensePin,
 		 []( unsigned mcuPin )
 		 {
@@ -16,4 +18,5 @@ void UpdateCabinTempSensor();
 
 			 // TODO do something with the temp now that we've calculated it.
 		 } );
+		  */
 }

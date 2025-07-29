@@ -1,7 +1,8 @@
 #include "Core/Can.h"
 
-#include "Keypad/HvacControlState.h"
 #include "Keypad/Buttons.h"
+#include "Keypad/HvacControlState.h"
+#include "Keypad/KeypadState.h"
 
 using namespace Keypad::HvacControlState;
 using Core::Can;
@@ -11,21 +12,21 @@ struct CanHvacControlState
 	const uint32_t arbitrationId = 0x407;
 	union
 	{
-		unsigned short bytes[ 8 ];
-		unsigned long dwords[ 2 ];
+		uint8_t bytes[ 8 ];
+		uint32_t dwords[ 2 ];
 	} data = { 0l, 0l };
 
-	CanHvacStatus( const HvacStatus &hvacStatus )
+	CanHvacControlState( const KeypadStatus &keypadStatus)
 	{
 
-		//auto x = hvacStatus.fanIncrease | static_cast<unsigned long>( hvacStatus.hvacOff );
+		// auto x = keypadStatus.fanIncrease | static_cast<unsigned long>( keypadStatus.hvacOff );
 		data.dwords[ 0 ] = static_cast<unsigned long>(
-				hvacStatus.airSource) | hvacStatus.rearDemist | hvacStatus.ac | hvacStatus.frontDemist |
-				hvacStatus.fanReduce | hvacStatus.fanIncrease | hvacStatus.hvacOff | hvacStatus.hvacAuto |
-				hvacStatus.vent | hvacStatus.hazard | hvacStatus.tempReduce | hvacStatus.tempIncrease |
-				hvacStatus.unlock | hvacStatus.dynamicStabilityControl | hacStatus.interiorLight | hvacStatus.lock );
+				keypadStatus.airSource) | keypadStatus.rearDemist | keypadStatus.ac | keypadStatus.frontDemist |
+				keypadStatus.fanReduce | keypadStatus.fanIncrease | keypadStatus.hvacOff | keypadStatus.hvacAuto |
+				keypadStatus.vent | keypadStatus.hazard | keypadStatus.tempReduce | keypadStatus.tempIncrease |
+				keypadStatus.unlock | keypadStatus.dynamicStabilityControl | keypadStatus.interiorLight | keypadStatus.lock );
 
-		data.dwords[ 1 ] = hvacStatus.cabinTemp;
+		data.dwords[ 1 ] = keypadStatus.cabinTemp;
 	}
 };
 

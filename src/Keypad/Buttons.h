@@ -144,18 +144,12 @@ const FdmTempSensor tempSensor = { Keypad::Pins::InterconnectPin::IP_TWENTY_FIVE
 								   Keypad::Pins::InterconnectPin::IP_TWENTY_FOUR, "Cabin Temp Sensor" };
 
 
-enum FdmButtonStatus
-{
-	UNKNOWN = 0,
-	ON = 1,
-	OFF = 2,
-};
+
+
 
 // ---------------------------------------
 // Current System Status Variables
 // ---------------------------------------
-FdmButtonStatus lastButtonStatus[ FdmButtonType::FBT_COUNT ] = {};
-FdmButtonStatus currentButtonStatus[ FdmButtonType::FBT_COUNT ] = {};
 
 typedef unsigned McuPin;
 
@@ -199,20 +193,6 @@ const Keypad::Pins::InterconnectPinMap pinMap[ Keypad::Pins::InterconnectPin::IP
 };
 
 
-template<typename Callback>
-bool withPin( const Keypad::Pins::InterconnectPin iPin, Callback callback )
-{
-	if( !iPin || iPin >= Keypad::Pins::InterconnectPin::IP_COUNT )
-	{
-		return false;
-	}
-	auto mcuPin = pinMap[ iPin ].mcuPin;
-	if( mcuPin == PIN_NOT_SET )
-	{
-		return false;
-	}
-	callback( mcuPin );
-}
 
 void setupSensorPins()
 {
@@ -240,46 +220,6 @@ void setupKeypadPins()
 		withPin( fdmButton.signalPin, setPinAsInputPullup );
 	}
 }
-
-
-template<typename ReprType, ReprType DefaultValue = 0x00, unsigned short ExtBitOffset = 0x00,
-		 unsigned short ExtBitMask = 0xFF>
-struct DataPoint
-{
-	using bitMask = ExtBitMask;
-	using bitOffset = ExtBitOffset;
-	using defaultValue = DefaultValue;
-
-	ReprType value;
-
-	constexpr DataPoint() : value( defaultValue ) {}
-
-	operator ReprType() const { return value; }
-
-	operator=( ReprType newValue ){ value = newValue };
-
-	inline operator unsigned long() const { return ( bitMask & value ) << bitOffset; }
-
-	inline unsigned long operator|( const unsigned long &other ) const
-	{
-		return static_cast<unsigned long>( this ) | other;
-	};
-
-	// template<typename OtherDataPoint>
-	// unsigned long operator|( const OtherDataPoint &rhs ) const
-	//{
-	//	return static_cast<unsigned long>( this ) | static_cast<unsigned long>( rhs );
-	// }
-};
-
-enum ButtonState
-{
-	BS_RELEASED = 0,
-	BS_PRESSED = 1,
-};
-
-template<unsigned short BitOffset>
-using Button = DataPoint<ButtonState, ButtonState::BS_RELEASED, BitOffset, 1>;
 
 } // namespace Buttons
 } // namespace Keypad
