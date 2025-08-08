@@ -30,8 +30,7 @@ void Setup()
 	// Core::InitGpio();
 	Core::Serial::InitUsartSystem();
 	Core::Can::InitCanSystem();
-
-	Keypad::RotaryDial::InitRotaryDialSystem();
+	Keypad::KeypadState::InitKeypadState();
 
 }
 

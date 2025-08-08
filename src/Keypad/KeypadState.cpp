@@ -1,12 +1,14 @@
 #include "KeypadState.h"
 
 #include "Buttons.h"
+#include "RotaryDial.h"
 
 #include <libopencm3/stm32/gpio.h>
 
 using namespace Keypad::KeypadState;
-
+using namespace Keypad::RotaryDial;
 using namespace Keypad::Buttons;
+
 
 
 enum ButtonStatus
@@ -55,28 +57,81 @@ void InitKeypadGpios()
 	for( unsigned i = 0; i < FdmButtonType::FBT_COUNT; i++ )
 	{
 		auto fdmButton = buttons[ i ];
+
 		gpio_mode_setup(
-			fdmButton.groundPin, // Port
+			GPIOB
 			GPIO_MODE_OUTPUT, // Set as output mode
 			GPIO_PUPD_NONE, // Disable the pull up or down
 			fdmButton.groundPin // Pin
 		);
 
-		// Set the ground pin to HIGH
-		gpio_clear(
-			GPIOB
-			// Port
-			fdmButton.groundPin // Port
+		// Set the ground pin to LOW
+		gpio_set(
+			GPIOB, // Port
+			fdmButton.groundPin // Ground Pin
+		);
+
+		gpio_mode_setup(
+			GPIOB,
+			GPIO_MODE_INPUT, // Set as input mode so we can read the signal pin
+			GPIO_PUPD_PULLUP, // Enable the pull up resistor
+			fdmButton.signalPin // Pin
+		);
+
+		// Set the ground pin to LOW
+		gpio_set(
+			GPIOB, // Port
+			fdmButton.signalPin // Signal Pin
 		);
 	}
+
+	// Set up the GPIO pins for the rotary encoder
+	gpio_mode_setup(
+		GPIOB,
+		GPIO_MODE_INPUT, // Set as input mode so we can read the signal pin
+		GPIO_PUPD_PULLUP, // Enable the pull up resistor
+		encoder.signalPinA // Signal Pin A
+	);
+	gpio_mode_setup(
+		GPIOB,
+		GPIO_MODE_INPUT, // Set as input mode so we can read the signal pin
+		GPIO_PUPD_PULLUP, // Enable the pull up resistor
+		encoder.signalPinC // Signal Pin C
+	);
+
+	// Set up the GPIO pins for the temperature sensor
+	gpio_mode_setup(
+		GPIOB,
+		GPIO_MODE_OUTPUT, // Set as output mode
+		GPIO_PUPD_NONE, // Disable the pull up or down
+		tempSensor.sensePin // Sense Pin
+	);
+
+	gpio_set(
+		GPIOB, // Port B
+		tempSensor.sensePin // Sense Pin
+	);
+
+	// Set the ground pin to LOW
+	gpio_mode_setup(
+		GPIOB,
+		GPIO_MODE_OUTPUT, // Set as output mode
+		GPIO_PUPD_NONE, // Disable the pull up or down
+		encoder.groundPinB // Ground Pin B
+	);
+	gpio_set(
+		GPIOB, // Port B
+		encoder.groundPinB // Ground Pin B
+	);
+
 }
 
 void InitKeypadState()
 {
 	InitKeypadGpios();
 
-	InitRotaryEncoder();
-	InitTempSensor();
+	InitRotaryDialSystem();
+
 }
 
 void UpdateKeypadState()
@@ -136,7 +191,6 @@ void UpdateKeypadState()
 			buttonStates[ i ] = BS_RELEASED;
 		}
 	}
-	
 
 }
 

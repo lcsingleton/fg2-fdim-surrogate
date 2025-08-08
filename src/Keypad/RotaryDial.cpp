@@ -16,9 +16,6 @@ constexpr auto Timer = TIM3;
 uint16_t lastPosition = 0;
 
 
-
-
-
 void ReadRotaryState()
 {
 	uint16_t position = timer_get_counter(Timer);
@@ -36,7 +33,7 @@ void ReadRotaryState()
 	}
 	
 
-	lastPosition = position
+	lastPosition = position;
 }
 
 void InitRotaryDialSystem()

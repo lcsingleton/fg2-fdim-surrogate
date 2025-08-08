@@ -138,7 +138,7 @@ const FdmButton buttons[ FdmButtonType::FBT_COUNT ] = {
 
 const FdmRotaryEncoder encoder = { Keypad::Pins::InterconnectPin::IP_TWENTY_TWO,
 								   Keypad::Pins::InterconnectPin::IP_TWENTY_THREE,
-								   Keypad::Pins::InterconnectPin::IP_TWENTY_SIX, "Volume Control" };
+								   Keypad::Pins::InterconnectPin::IP_TWENTY_SIX, "Encoder" };
 
 const FdmTempSensor tempSensor = { Keypad::Pins::InterconnectPin::IP_TWENTY_FIVE,
 								   Keypad::Pins::InterconnectPin::IP_TWENTY_FOUR, "Cabin Temp Sensor" };

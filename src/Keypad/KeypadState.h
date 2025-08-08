@@ -49,7 +49,10 @@ namespace KeypadState
 
 // State &GetState();
 
-void h();
+
+void UpdateKeypadState();
+
+void InitKeypadState();
 
 } // namespace KeypadState
 
