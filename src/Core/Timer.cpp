@@ -51,17 +51,16 @@ void sys_tick_handler( void ) { sysUptimeMs++; }
 void Sleep( milliseconds delay )
 {
 	Core::Timer::milliseconds wakeAt = sysUptimeMs + delay;
-	while( wakeAt > sysUptimeMs )
-	{
-		// Spin until wakeAt is 
-		continue;
-	}
+
+	// Spin until wakeAt is reached
+	while( wakeAt > sysUptimeMs );
 }
 
 /* Getter function for the current time */
 milliseconds GetSysUptimeMs() { return sysUptimeMs; }
 
-
+// Clock configuration for 50MHz operation
+// This is a 50MHz clock from an 8MHz external crystal
 const rcc_clock_scale ClockConf50Mhz = {
 	/* 100MHz from 8MHz external crystal */
 	.pllm = 8,

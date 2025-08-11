@@ -17,21 +17,17 @@ const Core::Timer::IntervalTimer allTimers[ 6 ] = {
 	// Output the CAN with the new state of the Media Key States every 500ms
 	Core::Timer::IntervalTimer{ 500, []() { Keypad::HvacControlState::OutputHvacControlState(); } },
 
-	// Update the internal state of the Cabin Temp Sensor every 10 seconds
-	Core::Timer::IntervalTimer{ 10000, []() { Keypad::CabinTempSensor::UpdateCabinTempSensor(); } },
+	// Update the internal state of the Cabin Temp Sensor every 5 seconds
+	Core::Timer::IntervalTimer{ 5000, []() { Keypad::CabinTempSensor::UpdateCabinTempSensor(); } },
 
 };
-
-void InitGpio() {}
 
 void Setup()
 {
 	Core::Timer::InitTimerSystem();
-	// Core::InitGpio();
 	Core::Serial::InitUsartSystem();
 	Core::Can::InitCanSystem();
 	Keypad::KeypadState::InitKeypadState();
-
 }
 
 

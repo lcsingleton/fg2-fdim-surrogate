@@ -6,11 +6,14 @@ namespace Keypad
 namespace CabinTempSensor
 {
 
+void InitTempSensor();
+
 void UpdateCabinTempSensor();
+
+float GetLatestTempCelsius();
 
 } // namespace CabinTempSensor
 
 } // namespace Keypad
 
 #endif // KEYPAD_CABINTEMPSENSOR_H
-

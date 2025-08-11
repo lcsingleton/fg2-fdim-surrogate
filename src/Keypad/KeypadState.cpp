@@ -9,8 +9,6 @@ using namespace Keypad::KeypadState;
 using namespace Keypad::RotaryDial;
 using namespace Keypad::Buttons;
 
-
-
 enum ButtonStatus
 {
 	BS_UNKNOWN = 0,
@@ -18,7 +16,7 @@ enum ButtonStatus
 	BS_PRESSED = 2,
 };
 
-ButtonStatus buttonStates[FdmButtonType::FBT_COUNT] = { 
+ButtonStatus buttonStates[ FdmButtonType::FBT_COUNT ] = {
 	ButtonStatus::BS_UNKNOWN, // FBT_HVAC_OFF
 	ButtonStatus::BS_UNKNOWN, // FBT_RECIRC
 	ButtonStatus::BS_UNKNOWN, // FBT_AC
@@ -47,7 +45,7 @@ ButtonStatus buttonStates[FdmButtonType::FBT_COUNT] = {
 	ButtonStatus::BS_UNKNOWN, // FBT_LOCK
 	ButtonStatus::BS_UNKNOWN, // FBT_UNLOCK
 	ButtonStatus::BS_UNKNOWN, // FBT_DSC
-	ButtonStatus::BS_UNKNOWN  // FBT_INTERIOR_LIGHT
+	ButtonStatus::BS_UNKNOWN // FBT_INTERIOR_LIGHT
 };
 
 
@@ -58,72 +56,60 @@ void InitKeypadGpios()
 	{
 		auto fdmButton = buttons[ i ];
 
-		gpio_mode_setup(
-			GPIOB
-			GPIO_MODE_OUTPUT, // Set as output mode
-			GPIO_PUPD_NONE, // Disable the pull up or down
-			fdmButton.groundPin // Pin
+		gpio_mode_setup( GPIOB GPIO_MODE_OUTPUT, // Set as output mode
+						 GPIO_PUPD_NONE, // Disable the pull up or down
+						 fdmButton.groundPin // Pin
 		);
 
 		// Set the ground pin to LOW
-		gpio_set(
-			GPIOB, // Port
-			fdmButton.groundPin // Ground Pin
+		gpio_set( GPIOB, // Port
+				  fdmButton.groundPin // Ground Pin
 		);
 
-		gpio_mode_setup(
-			GPIOB,
-			GPIO_MODE_INPUT, // Set as input mode so we can read the signal pin
-			GPIO_PUPD_PULLUP, // Enable the pull up resistor
-			fdmButton.signalPin // Pin
+		gpio_mode_setup( GPIOB,
+						 GPIO_MODE_INPUT, // Set as input mode so we can read the signal pin
+						 GPIO_PUPD_PULLUP, // Enable the pull up resistor
+						 fdmButton.signalPin // Pin
 		);
 
 		// Set the ground pin to LOW
-		gpio_set(
-			GPIOB, // Port
-			fdmButton.signalPin // Signal Pin
+		gpio_set( GPIOB, // Port
+				  fdmButton.signalPin // Signal Pin
 		);
 	}
 
 	// Set up the GPIO pins for the rotary encoder
-	gpio_mode_setup(
-		GPIOB,
-		GPIO_MODE_INPUT, // Set as input mode so we can read the signal pin
-		GPIO_PUPD_PULLUP, // Enable the pull up resistor
-		encoder.signalPinA // Signal Pin A
+	gpio_mode_setup( GPIOB,
+					 GPIO_MODE_INPUT, // Set as input mode so we can read the signal pin
+					 GPIO_PUPD_PULLUP, // Enable the pull up resistor
+					 encoder.signalPinA // Signal Pin A
 	);
-	gpio_mode_setup(
-		GPIOB,
-		GPIO_MODE_INPUT, // Set as input mode so we can read the signal pin
-		GPIO_PUPD_PULLUP, // Enable the pull up resistor
-		encoder.signalPinC // Signal Pin C
+	gpio_mode_setup( GPIOB,
+					 GPIO_MODE_INPUT, // Set as input mode so we can read the signal pin
+					 GPIO_PUPD_PULLUP, // Enable the pull up resistor
+					 encoder.signalPinC // Signal Pin C
 	);
 
 	// Set up the GPIO pins for the temperature sensor
-	gpio_mode_setup(
-		GPIOB,
-		GPIO_MODE_OUTPUT, // Set as output mode
-		GPIO_PUPD_NONE, // Disable the pull up or down
-		tempSensor.sensePin // Sense Pin
+	gpio_mode_setup( GPIOB,
+					 GPIO_MODE_OUTPUT, // Set as output mode
+					 GPIO_PUPD_NONE, // Disable the pull up or down
+					 tempSensor.sensePin // Sense Pin
 	);
 
-	gpio_set(
-		GPIOB, // Port B
-		tempSensor.sensePin // Sense Pin
+	gpio_set( GPIOB, // Port B
+			  tempSensor.sensePin // Sense Pin
 	);
 
 	// Set the ground pin to LOW
-	gpio_mode_setup(
-		GPIOB,
-		GPIO_MODE_OUTPUT, // Set as output mode
-		GPIO_PUPD_NONE, // Disable the pull up or down
-		encoder.groundPinB // Ground Pin B
+	gpio_mode_setup( GPIOB,
+					 GPIO_MODE_OUTPUT, // Set as output mode
+					 GPIO_PUPD_NONE, // Disable the pull up or down
+					 encoder.groundPinB // Ground Pin B
 	);
-	gpio_set(
-		GPIOB, // Port B
-		encoder.groundPinB // Ground Pin B
+	gpio_set( GPIOB, // Port B
+			  encoder.groundPinB // Ground Pin B
 	);
-
 }
 
 void InitKeypadState()
@@ -132,65 +118,57 @@ void InitKeypadState()
 
 	InitRotaryDialSystem();
 
+	InitTempSensor();
 }
 
 void UpdateKeypadState()
 {
 	// Clear all of the ground pins and signal pins
-	for ( unsigned i = 0; i < FdmButtonType::FBT_COUNT;
-		i++ )
+	for( unsigned i = 0; i < FdmButtonType::FBT_COUNT; i++ )
 	{
 		auto fdmButton = buttons[ i ];
 
-		gpio_clear(
-			GPIOB, // Port B
-			fdmButton.groundPin // Ground Pin
+		gpio_clear( GPIOB, // Port B
+					fdmButton.groundPin // Ground Pin
 		);
-		gpio_set(
-			GPIOB, // Port B
-			fdmButton.signalPin // Signal Pin
+		gpio_set( GPIOB, // Port B
+				  fdmButton.signalPin // Signal Pin
 		);
 	}
 
 
 	// Perform a matrix scan of the buttons
-	for ( unsigned i = 0; i < FdmButtonType::FBT_COUNT; i++ )
+	for( unsigned i = 0; i < FdmButtonType::FBT_COUNT; i++ )
 	{
+
 		auto fdmButton = buttons[ i ];
 
-		gpio_mode_setup(
-			fdmButton.groundPin, // Port
-			GPIO_MODE_INPUT,
-			GPIO_PUPD_PULLUP, // Enable the pull up resistor
-			fdmButton.groundPin // Pin
+		gpio_mode_setup( fdmButton.groundPin, // Port
+						 GPIO_MODE_INPUT,
+						 GPIO_PUPD_PULLUP, // Enable the pull up resistor
+						 fdmButton.groundPin // Pin
 		);
-		gpio_set(
-			GPIOB, // Port B
-			fdmButton.signalPin // Signal Pin
+		gpio_set( GPIOB, // Port B
+				  fdmButton.signalPin // Signal Pin
 		);
 
 		// Read the status of the signal pin
-		auto pinStatus = gpio_get(
-			GPIOB, // Port B
-			fdmButton.signalPin // Signal Pin
+		auto pinStatus = gpio_get( GPIOB, // Port B
+								   fdmButton.signalPin // Signal Pin
 		);
 
 		// Set the signal pin back to HIGH
-		gpio_clear(
-			GPIOB, // Port B
-			fdmButton.signalPin // Signal Pin
+		gpio_clear( GPIOB, // Port B
+					fdmButton.signalPin // Signal Pin
 		);
 
-		//
-		if ( pinStatus )
+		// Update the button state based on the pin status
+		if( pinStatus )
 		{
 			buttonStates[ i ] = BS_PRESSED;
-		}
-		else
+		} else
 		{
 			buttonStates[ i ] = BS_RELEASED;
 		}
 	}
-
 }
-
