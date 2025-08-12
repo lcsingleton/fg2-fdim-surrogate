@@ -4,86 +4,75 @@ cmake_minimum_required(VERSION 3.16.0)
 set(CMAKE_C_COMPILER_WORKS TRUE)
 SET(CMAKE_CXX_COMPILER_WORKS TRUE)
 
+
+# Build the LibOpenCM3 STM32F4 Library
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/lib/libopencm3/lib/libopencm3_stm32f4.a
+    COMMAND make -C ${CMAKE_CURRENT_SOURCE_DIR}/lib/libopencm3 lib/stm32/f4
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib/libopencm3
+    COMMENT "Building libopencm3.a"
+)
+
+# Create a custom target for the library
+add_custom_target(
+    libopencm3stm32f4
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/lib/libopencm3/lib/libopencm3_stm32f4.a
+)
+
+# Create an imported library target for the library
+add_library( libopencm3 STATIC IMPORTED )
+
+# Set the location of the imported library
+set_target_properties(libopencm3 PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/lib/libopencm3/lib/libopencm3_stm32f4.a)
+
+# Define the main project
 project(
 	icc_surrogate
 	LANGUAGES CXX C
 )
 
+
+# Store a list of source files to compile
 set(
 	APP_SRCS
 		src/Acm/KeepAlive.cpp
-		src/Acm/KeepAlive.h
 
-		src/Core/BitFieldMember.h
 		src/Core/Can.cpp
-		src/Core/Can.h
 		src/Core/Serial.cpp
-		src/Core/Serial.h
 		src/Core/Timer.cpp
-		src/Core/Timer.h
 
 		src/Icc/KeepAlive.cpp
-		src/Icc/KeepAlive.h
 
-		src/Keypad/Buttons.h
 		src/Keypad/CabinTempSensor.cpp
-		src/Keypad/CabinTempSensor.h
 		src/Keypad/HvacControlState.cpp
-		src/Keypad/HvacControlState.h
 		src/Keypad/KeypadState.cpp
-		src/Keypad/KeypadState.h
 		src/Keypad/MediaControlState.cpp
-		src/Keypad/MediaControlState.h
-		src/Keypad/Pins.h
 		src/Keypad/RotaryDial.cpp
-		src/Keypad/RotaryDial.h
 
 		src/SZRaize/GM/Universal.cpp
-		src/SZRaize/GM/Universal.h
 
 		src/Main.cpp
-		src/Main.h
 
 )
 
+include_directories(
+	# Make the LibOpenCM3 Headers Available
+	${CMAKE_CURRENT_SOURCE_DIR}/lib/libopencm3/include
+	# Make sure the head files from the src directory are available
+	${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+# Set the output as an executable, of the source files
 add_executable(
-		icc_surrogate
-		${APP_SRCS}
+	icc_surrogate
+	${APP_SRCS}
 )
 
-set(MCU_VARIANT stm32f412ret6 INTERNAL)
+# Define STM32F4 for the build
+target_compile_definitions(icc_surrogate PRIVATE STM32F4)
 
-set(OPENCM3_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/lib/libopencm3")
+# Set the dependencies for the target
+add_dependencies(icc_surrogate libopencm3stm32f4)
 
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/opencm3_utils.cmake)
-
-if(NOT DEFINED MCU_VARIANT)
-    message(FATAL_ERROR "ERROR: MCU_VARIANT not defined")
-endif()
-
-opencm3_add_stm32_library(${MCU_VARIANT})
-
-
-
-target_compile_definitions(icc_surrogate PUBLIC __ARM_ARCH_7EM__)
-
-target_include_directories(
-		icc_surrogate
-		PRIVATE lib/Kvasir/Lib
-		src
-		lib/libopencm3/include
-)
-
-add_dependencies(
-		icc_surrogate
-		opencm3_stm32f4
-)
-target_link_libraries(
-		icc_surrogate
-		${LIBOPENCM3_STM32F4_LIBRARIES}
-)
-#add_bin_from_elf(
-#		blink_cpp.bin
-#		blink_cpp
-#)
-#add_stlink_upload_target(blink_cpp.bin)
+# Link the library to the target
+target_link_libraries(icc_surrogate PRIVATE libopencm3)

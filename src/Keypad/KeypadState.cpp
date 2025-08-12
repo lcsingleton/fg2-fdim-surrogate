@@ -56,7 +56,8 @@ void InitKeypadGpios()
 	{
 		auto fdmButton = buttons[ i ];
 
-		gpio_mode_setup( GPIOB GPIO_MODE_OUTPUT, // Set as output mode
+		gpio_mode_setup( GPIOB,
+									 GPIO_MODE_OUTPUT, // Set as output mode
 						 GPIO_PUPD_NONE, // Disable the pull up or down
 						 fdmButton.groundPin // Pin
 		);

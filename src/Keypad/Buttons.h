@@ -103,7 +103,7 @@ const FdmButton buttons[ FdmButtonType::FBT_COUNT ] = {
 	{ FdmButtonType::FBT_DSC, Keypad::Pins::InterconnectPin::IP_ELEVEN, Keypad::Pins::InterconnectPin::IP_NINETEEN,
 	  "Toggle Stability Control" },
 	{ FdmButtonType::FBT_SCN_AS, Keypad::Pins::InterconnectPin::IP_TWELVE, Keypad::Pins::InterconnectPin::IP_NINETEEN,
-	  "Scan Radio" },
+	  "Scan/Auto Save" },
 	{ FdmButtonType::FBT_SOURCE_MEDIA, Keypad::Pins::InterconnectPin::IP_THIRTEEN,
 	  Keypad::Pins::InterconnectPin::IP_NINETEEN, "Cycle Media Audio Sources" },
 	{ FdmButtonType::FBT_SOURCE_FM_AM, Keypad::Pins::InterconnectPin::IP_FOURTEEN,
@@ -144,17 +144,13 @@ const FdmTempSensor tempSensor = { Keypad::Pins::InterconnectPin::IP_TWENTY_FIVE
 								   Keypad::Pins::InterconnectPin::IP_TWENTY_FOUR, "Cabin Temp Sensor" };
 
 
-
-
-
 // ---------------------------------------
 // Current System Status Variables
 // ---------------------------------------
 
 typedef unsigned McuPin;
 
-struct Keypad::Pins::InterconnectPinMap
-{
+struct InterconnectPinMap {
 	Keypad::Pins::InterconnectPin connectorPin;
 	McuPin mcuPin;
 };
@@ -162,7 +158,7 @@ struct Keypad::Pins::InterconnectPinMap
 
 const McuPin PIN_NOT_SET = 0XFF;
 
-const Keypad::Pins::InterconnectPinMap pinMap[ Keypad::Pins::InterconnectPin::IP_COUNT ] = {
+const InterconnectPinMap pinMap[ Keypad::Pins::InterconnectPin::IP_COUNT ] = {
 	// TODO: Fill this out when the header is completed
 	{ .connectorPin = Keypad::Pins::InterconnectPin::IP_ONE, .mcuPin = PIN_NOT_SET }, // LED +
 	{ .connectorPin = Keypad::Pins::InterconnectPin::IP_TWO, .mcuPin = PIN_NOT_SET }, // LED -
@@ -192,34 +188,6 @@ const Keypad::Pins::InterconnectPinMap pinMap[ Keypad::Pins::InterconnectPin::IP
 	{ .connectorPin = Keypad::Pins::InterconnectPin::IP_TWENTY_SIX, .mcuPin = PIN_NOT_SET },
 };
 
-
-
-void setupSensorPins()
-{
-	withPin( tempSensor.sensePin, []( McuPin mcuPin ) { pinMode( mcuPin, OUTPUT ); } );
-
-	auto setPinAsInput = []( McuPin mcuPin ) { pinMode( mcuPin, INPUT ); };
-
-	withPin( encoder.signalPinA, setPinAsInput );
-	withPin( encoder.signalPinC, setPinAsInput );
-
-	auto writeHigh = []( McuPin mcuPin ) { digitalWrite( mcuPin, HIGH ); };
-
-	withPin( encoder.signalPinA, writeHigh );
-	withPin( encoder.signalPinC, writeHigh );
-}
-
-void setupKeypadPins()
-{
-	auto setPinAsInputPullup = []( McuPin mcuPin ) { pinMode( mcuPin, INPUT_PULLUP ); };
-
-	for( unsigned i = 0; i < FdmButtonType::FBT_COUNT; i++ )
-	{
-		auto fdmButton = buttons[ i ];
-
-		withPin( fdmButton.signalPin, setPinAsInputPullup );
-	}
-}
 
 } // namespace Buttons
 } // namespace Keypad

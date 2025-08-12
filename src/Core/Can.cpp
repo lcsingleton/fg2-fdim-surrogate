@@ -31,18 +31,26 @@ SendResult SendPayload( uint32_t arbitrationId, uint8_t ( &data )[ 8 ] )
 // Interupt handler for the CAN FIFO 0 and FIFO 1 message pending interrupts
 void can1_rx0_isr( void )
 {
-	// Read the message from FIFO 0
-	struct can_msg msg;
-	if( can_receive( CanPort, 0, &msg ) )
-	{
-		// Process the message here
-		// For example, you can print the message ID and data
-		// printf("Received message with ID: 0x%08X, Data: ", msg.id);
-		// for (int i = 0; i < msg.length; i++) {
-		//     printf("0x%02X ", msg.data[i]);
-		// }
-		// printf("\n");
-	}
+	uint32_t id;
+	bool isExtended;
+	bool isRequestToTransmit;
+	uint8_t filterMatchId;
+	uint8_t payloadSize;
+	uint8_t payload[8];
+
+	can_receive(
+		CanPort, // Working with CAN1 Can Controller
+		0, // FIFO 0
+		true, // Release the FIFO after reading
+		&id, // Pointer to store the message ID
+		&isExtended, // Pointer to store if the message ID is extended
+		&isRequestToTransmit, // Pointer to store if this is a request of transmission
+		&filterMatchId, // Pointer to store the filter match ID
+		&payloadSize, // Pointer to store the payload size
+		payload, // Pointer to store the payload data
+		nullptr,
+	);
+
 }
 
 void can1_rx1_isr( void )
