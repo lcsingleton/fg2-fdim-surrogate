@@ -38,11 +38,8 @@ void InitTempSensor()
 	// Power on the ADC
 	adc_power_on( Adc );
 
-	// Unsure what this does more so that it is required
-	adc_calibrate( Adc );
-
 	// Use 12 bit resolution for ADC conversions
-	adc_set_resolution( Adc, ADC_RESOLUTION_12BIT );
+	adc_set_resolution( Adc, ADC_CR1_RES_12BIT );
 
 	// Set the ADC clock prescaler to 4
 	adc_set_prescaler( Adc, ADC_PRESCALER_4 );

@@ -1,6 +1,3 @@
-[submodule "lib/Kvasir"]
-	path = lib/Kvasir
-	url = git@github.com:kvasir-io/Kvasir.git
 [submodule "lib/libopencm3"]
 	path = lib/libopencm3
 	url = git@github.com:libopencm3/libopencm3.git

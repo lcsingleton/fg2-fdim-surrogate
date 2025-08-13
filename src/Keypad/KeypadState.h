@@ -43,7 +43,7 @@ struct State
 	bool interiorLight = false;
 	bool dynamicStabilityControl = false;
 	bool unlock = false;
-	unsigned char cabinTemp = 0x7F;
+	uint8_t cabinTemp = 0x7F;
 };
 
 //------------------------------------------------
