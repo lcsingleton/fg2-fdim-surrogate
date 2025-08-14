@@ -185,7 +185,11 @@ private:
     }
 
     // --- Unpacking Implementation ---
-    template<size_t Index, typename First, typename... Rest>
+    template<
+    size_t Index, // Index in Fields of the field currently being unpacked
+    typename First, // The current Field
+    typename... Rest //
+    >
     static void UnpackImpl(Struct& obj, uint64_t packed) {
         if constexpr (!std::is_base_of_v<FixedField<First::value, First::bits>, First>) {
             uint64_t val = (packed >> BitOffset<Index>()) & ((1ULL << First::bits) - 1);
