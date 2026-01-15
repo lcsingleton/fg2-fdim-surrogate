@@ -1,6 +1,8 @@
 #ifndef CORE_CAN_H
 #define CORE_CAN_H
 
+#include <stdint.h>
+
 namespace Core
 {
 namespace Can
@@ -20,10 +22,10 @@ struct MsCanMessage
 	unsigned char data;
 };
 
-SendResult SendPayload( const unsigned int arbitrationId, const unsigned char data[ 8 ] );
+SendResult SendPayload( unsigned long arbitrationId, const unsigned char* data );
 
 template<typename CanMessage>
-SendResult Send( const CanMessage message )
+SendResult Send( const CanMessage& message )
 {
 	return SendPayload( message.arbitrationId, message.data );
 }

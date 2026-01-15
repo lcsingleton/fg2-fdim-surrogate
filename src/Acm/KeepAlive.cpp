@@ -1,15 +1,16 @@
 #include "Acm/KeepAlive.h"
 #include "Core/Can.h"
+#include <cstdint>
 
 using namespace Acm::KeepAlive;
 
 struct AcmKeepAlive
 {
-	const unsigned int arbitrationId = 0x425;
-	const unsigned char data[ 8 ] = { 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+	const uint32_t arbitrationId = 0x425;
+	const uint8_t data[ 8 ] = { 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 };
 
-void OutputKeepAlive()
+void Acm::KeepAlive::OutputKeepAlive()
 {
 	auto result = Core::Can::Send<AcmKeepAlive>( AcmKeepAlive{} );
 

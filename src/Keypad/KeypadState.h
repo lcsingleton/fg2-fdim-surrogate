@@ -1,6 +1,8 @@
 #ifndef KEYPAD_KEYPADSTATE_H
 #define KEYPAD_KEYPADSTATE_H
 
+#include <stdint.h>
+
 namespace Keypad
 {
 namespace KeypadState

@@ -1,3 +1,46 @@
+# FG2 FDIM Surrogate
+
+An STM32F412-based surrogate for the Ford FG2 Front Display Module (FDIM), providing HVAC controls, media controls, and CAN bus integration.
+
+## Building
+
+### Prerequisites
+
+- ARM GCC toolchain (`arm-none-eabi-gcc`)
+- CMake 3.16 or later
+- Python 3 (for linker script generation)
+- Make or Ninja build system
+
+### Build Steps
+
+1. **Build libopencm3 library:**
+   ```bash
+   make -C lib/libopencm3 lib/stm32/f4
+   ```
+
+2. **Generate linker script for STM32F412RET6:**
+   ```bash
+   arm-none-eabi-gcc -P -E $(python3 lib/libopencm3/scripts/genlink.py lib/libopencm3/ld/devices.data stm32f412ret6 DEFS) lib/libopencm3/ld/linker.ld.S > lib/libopencm3/lib/stm32/f4/stm32f412ret6.ld
+   ```
+
+3. **Configure CMake:**
+   ```bash
+   cmake -B build
+   ```
+
+4. **Build the project:**
+   ```bash
+   cd build && make
+   ```
+
+The output binary will be `build/icc_surrogate`.
+
+## Flashing
+
+(TODO: Add flashing instructions)
+
+---
+
 # Connectors
 
 
@@ -105,27 +148,27 @@ FE 00 00 00 00 00 00 00
 0xFF = no temp
 85 ~25-30
 
-00 00 00 00 FF 00 00 00 = No Temp
+80 00 00 00 FF 00 00 00 = ac
 40 00 00 00 FF 00 00 00 = RECIRC
 20 00 00 00 FF 00 00 00 = R DEMIST
-80 00 00 00 FF 00 00 00 = ac
+00 00 00 00 FF 00 00 00 = No Temp
 
-00 02 00 00 FF 00 00 00 = F DEMIST
-00 04 00 00 FF 00 00 00 = FAN-
-00 08 00 00 FF 00 00 00 = FAN+
-00 10 00 00 FF 00 00 00 = HVAC OFF
-00 20 00 00 FF 00 00 00 = AUTO
 00 80 00 00 FF 00 00 00 = VENT
+00 20 00 00 FF 00 00 00 = AUTO
+00 10 00 00 FF 00 00 00 = HVAC OFF
+00 08 00 00 FF 00 00 00 = FAN+
+00 04 00 00 FF 00 00 00 = FAN-
+00 02 00 00 FF 00 00 00 = F DEMIST
 
+00 00 80 00 FF 00 00 00 = TEMP+
+00 00 40 00 FF 00 00 00 = TEMP-
 00 00 01 00 FF 00 00 00 =  HAZZARD
 
-00 00 40 00 FF 00 00 00 = TEMP-
-00 00 80 00 FF 00 00 00 = TEMP+
 
-00 00 00 04 FF 00 00 00 = UNLOCK
 00 00 00 40 FF 00 00 00 = LOCK
-00 00 00 10 FF 00 00 00 = DSC
 00 00 00 20 FF 00 00 00 = LAMP
+00 00 00 10 FF 00 00 00 = DSC
+00 00 00 04 FF 00 00 00 = UNLOCK
 
 
 0X2FC Media Controls
@@ -260,7 +303,7 @@ Others?
 
 # Build
 sudo apt install stlink-tools gcc-arm-none-eabi
-
+cmake
 make
 
 # Deploy

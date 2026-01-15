@@ -62,7 +62,7 @@ void SerialSetup()
 	usart_enable(USART1);
 }
 
-void InitUsartSystem()
+void Core::Serial::InitUsartSystem()
 {
 	ClockSetup();
 	PinSetup();

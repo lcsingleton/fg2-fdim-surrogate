@@ -1,5 +1,14 @@
+/**
+ * HVAC Control State CAN Message Handler
+ * 
+ * This module packages the current state of all HVAC and keypad controls
+ * into a CAN message and transmits it on the vehicle bus.
+ * 
+ * The message uses arbitration ID 0x307 and follows the vehicle's protocol
+ * for communicating climate control and auxiliary button states.
+ */
+
 #include <cstdint>
-#include <array>
 #include "Core/BitPack.h"
 #include "Core/Can.h"
 
@@ -10,48 +19,75 @@ using namespace Keypad::HvacControlState;
 using namespace Core::Can;
 using namespace Core::BitPack;
 
+/**
+ * CAN Message Structure for HVAC Control State
+ * 
+ * Arbitration ID: 0x307
+ * Data Length: 8 bytes (64 bits)
+ * 
+ * This structure packs all HVAC and auxiliary control button states
+ * into a single 64-bit CAN message following the vehicle's protocol.
+ * Bit positions match the expected format of the climate control module.
+ */
 struct CanHvacControlState
 {
 	const uint32_t arbitrationId = 0x307;
-	std::array<uint8_t, 8> data;
+	uint8_t data[8];
 
 	CanHvacControlState( const Keypad::KeypadState::State &keypadState )
 	{
-		data = PackCanData(
-			BoolField(keypadState.ac),
-			BoolField(keypadState.airSource),
-			BoolField(keypadState.rearDemist),
-	        FixedField<0, 5>(), // Next 5 bits unused for Single Zone Climate Control
-			BoolField(keypadState.vent),
-	        FixedField<0, 1>(), // Pack 1 bit with 0
-			BoolField(keypadState.hvacAuto),
-			BoolField(keypadState.hvacOff),
-			BoolField(keypadState.fanIncrease),
-			BoolField(keypadState.fanReduce),
-			BoolField(keypadState.frontDemist),
-			FixedField<0, 1>(), // Pack 1 bit with 0
-			BoolField(keypadState.tempIncrease),
-			BoolField(keypadState.tempReduce),
-			BoolField(keypadState.hazard),
-			FixedField<0, 1>(), // Pack 1 bit with 0
-			BoolField(keypadState.lock),
-			BoolField(keypadState.interiorLight),
-			BoolField(keypadState.dynamicStabilityControl),
-			FixedField<0, 1>(), // Pack 1 bit with 0
-			BoolField(keypadState.unlock),
-			Field<uint8_t, 8>(keypadState.cabinTemp), // Cabin Temp occupied a whole byte
-			FixedField<0, 1>() // Pack the remainder of the 64 bits with 0 
-		).bytes;
+		// Pack all control states into 64 bits following the vehicle protocol
+		// Unused bits are set to 0 and reserved for dual-zone climate features
+		auto packed = PackCanData(
+			BoolField(keypadState.ac),                // AC on/off
+			BoolField(keypadState.airSource),         // Recirculation/fresh air
+			BoolField(keypadState.rearDemist),        // Rear window demister
+	        FixedField<0, 5>(),                       // Reserved for dual-zone climate (5 bits)
+			BoolField(keypadState.vent),              // Vent mode selection
+	        FixedField<0, 1>(),                       // Reserved bit
+			BoolField(keypadState.hvacAuto),          // Auto climate mode
+			BoolField(keypadState.hvacOff),           // HVAC system off
+			BoolField(keypadState.fanIncrease),       // Fan speed up
+			BoolField(keypadState.fanReduce),         // Fan speed down
+			BoolField(keypadState.frontDemist),       // Windscreen demister
+			FixedField<0, 1>(),                       // Reserved bit
+			BoolField(keypadState.tempIncrease),      // Temperature up
+			BoolField(keypadState.tempReduce),        // Temperature down
+			BoolField(keypadState.hazard),            // Hazard lights
+			FixedField<0, 1>(),                       // Reserved bit
+			BoolField(keypadState.lock),              // Door lock
+			BoolField(keypadState.interiorLight),     // Cabin light
+			BoolField(keypadState.dynamicStabilityControl), // DSC toggle
+			FixedField<0, 1>(),                       // Reserved bit
+			BoolField(keypadState.unlock),            // Door unlock
+			Field<uint8_t, 8>(keypadState.cabinTemp), // Cabin temperature (full byte)
+			FixedField<0, 1>()                        // Padding to 64 bits
+		);
+		
+		// Copy packed bytes to array (will be copied again to CAN registers anyway)
+		for( size_t i = 0; i < 8; i++ )
+		{
+			data[i] = packed.bytes[i];
+		}
 	}
 };
 
-void OutputHvacControlState()
+/**
+ * Transmit the current HVAC control state on the CAN bus
+ * 
+ * Reads the current keypad state and packages it into a CAN message,
+ * then transmits it on the vehicle bus for the climate control module
+ * to process.
+ */
+void Keypad::HvacControlState::OutputHvacControlState()
 {
+	// Package current state and send via CAN bus
 	auto result = Send( CanHvacControlState{ Keypad::KeypadState::GetState() } );
 
-
+	// Message is fire-and-forget - the CAN controller handles retries
+	// Result indicates which transmit mailbox was used, or failure
 	if( result != SendResult::SEND_FAILED )
 	{
-		// success, result contains the mailbox (0, 1, or 2) the message was placed in
+		// Successfully queued for transmission
 	}
 }

@@ -2,6 +2,7 @@
 
 #include "Buttons.h"
 #include "RotaryDial.h"
+#include "CabinTempSensor.h"
 
 #include <libopencm3/stm32/gpio.h>
 
@@ -58,7 +59,7 @@ void InitKeypadGpios()
 		auto fdmButton = buttons[ i ];
 
 		gpio_mode_setup( GPIOB,
-									 GPIO_MODE_OUTPUT, // Set as output mode
+						 GPIO_MODE_OUTPUT, // Set as output mode
 						 GPIO_PUPD_NONE, // Disable the pull up or down
 						 fdmButton.groundPin // Pin
 		);
@@ -92,16 +93,8 @@ void InitKeypadGpios()
 					 encoder.signalPinC // Signal Pin C
 	);
 
-	// Set up the GPIO pins for the temperature sensor
-	gpio_mode_setup( GPIOB,
-					 GPIO_MODE_OUTPUT, // Set as output mode
-					 GPIO_PUPD_NONE, // Disable the pull up or down
-					 tempSensor.sensePin // Sense Pin
-	);
-
-	gpio_set( GPIOB, // Port B
-			  tempSensor.sensePin // Sense Pin
-	);
+	// Note: Temperature sensor GPIO configuration is handled in CabinTempSensor::InitTempSensor()
+	// The sensor uses ADC1 Channel 0 on GPIOA Pin 1 configured as an analog input
 
 	// Set the ground pin to LOW
 	gpio_mode_setup( GPIOB,
@@ -114,7 +107,7 @@ void InitKeypadGpios()
 	);
 }
 
-void InitKeypadState()
+void Keypad::KeypadState::InitKeypadState()
 {
 	InitKeypadGpios();
 
@@ -123,7 +116,7 @@ void InitKeypadState()
 	InitTempSensor();
 }
 
-void UpdateKeypadState()
+void Keypad::KeypadState::UpdateKeypadState()
 {
 	// Clear all of the ground pins and signal pins
 	for( unsigned i = 0; i < FdmButtonType::FBT_COUNT; i++ )
@@ -173,4 +166,10 @@ void UpdateKeypadState()
 			buttonStates[ i ] = BS_RELEASED;
 		}
 	}
+}
+
+State &Keypad::KeypadState::GetState()
+{
+	static State state;
+	return state;
 }

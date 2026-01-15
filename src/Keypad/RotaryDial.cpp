@@ -36,7 +36,7 @@ void ReadRotaryState()
 	lastPosition = position;
 }
 
-void InitRotaryDialSystem()
+void Keypad::RotaryDial::InitRotaryDialSystem()
 {
 	// Enable GPIOA and TIM2 clocks
     rcc_periph_clock_enable(RCC_GPIOA);

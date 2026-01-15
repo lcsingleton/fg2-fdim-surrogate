@@ -57,7 +57,7 @@ void Sleep( milliseconds delay )
 }
 
 /* Getter function for the current time */
-milliseconds GetSysUptimeMs() { return sysUptimeMs; }
+Core::Timer::milliseconds Core::Timer::GetSysUptimeMs() { return sysUptimeMs; }
 
 // Clock configuration for 50MHz operation
 // This is a 50MHz clock from an 8MHz external crystal
@@ -87,7 +87,7 @@ const rcc_clock_scale ClockConf50Mhz = {
  * and a 1khz "system tick" count. The SYSTICK counter is
  * a standard feature of the Cortex-M series.
  */
-void InitTimerSystem()
+void Core::Timer::InitTimerSystem()
 {
 	/* Base board frequency, set to 50MHz - half the max for the STM32F412R */
 	rcc_clock_setup_pll( &ClockConf50Mhz );

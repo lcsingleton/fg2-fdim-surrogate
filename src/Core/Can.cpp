@@ -1,5 +1,8 @@
 // CAN System
 #include <libopencm3/stm32/can.h>
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/cm3/nvic.h>
 
 // Register definitions for the MCU
 
@@ -9,7 +12,7 @@ using namespace Core::Can;
 
 constexpr auto CanPort = CAN1;
 
-SendResult SendPayload( uint32_t arbitrationId, uint8_t ( &data )[ 8 ] )
+Core::Can::SendResult Core::Can::SendPayload( unsigned long arbitrationId, const unsigned char* data )
 {
 
 	auto result = can_transmit( CanPort,
@@ -17,7 +20,7 @@ SendResult SendPayload( uint32_t arbitrationId, uint8_t ( &data )[ 8 ] )
 								false, // Not extended
 								false, // Not a request to transmit
 								8, // size of payload
-								data // data to transmit
+								const_cast<unsigned char*>(data) // data to transmit
 	);
 
 	if( result == SEND_SUCCESS_QUEUE_1 || result == SEND_SUCCESS_QUEUE_2 || result == SEND_SUCCESS_QUEUE_3 )
@@ -48,28 +51,37 @@ void can1_rx0_isr( void )
 		&filterMatchId, // Pointer to store the filter match ID
 		&payloadSize, // Pointer to store the payload size
 		payload, // Pointer to store the payload data
-		nullptr,
+		nullptr
 	);
 
 }
 
 void can1_rx1_isr( void )
 {
-	// Read the message from FIFO 1
-	struct can_msg msg;
-	if( can_receive( CanPort, 1, &msg ) )
-	{
-		// Process the message here
-		// For example, you can print the message ID and data
-		// printf("Received message with ID: 0x%08X, Data: ", msg.id);
-		// for (int i = 0; i < msg.length; i++) {
-		//     printf("0x%02X ", msg.data[i]);
-		// }
-		// printf("\n");
-	}
+	uint32_t id;
+	bool isExtended;
+	bool isRequestToTransmit;
+	uint8_t filterMatchId;
+	uint8_t payloadSize;
+	uint8_t payload[8];
+
+	can_receive(
+		CanPort, // Working with CAN1 Can Controller
+		1, // FIFO 1
+		true, // Release the FIFO after reading
+		&id, // Pointer to store the message ID
+		&isExtended, // Pointer to store if the message ID is extended
+		&isRequestToTransmit, // Pointer to store if this is a request of transmission
+		&filterMatchId, // Pointer to store the filter match ID
+		&payloadSize, // Pointer to store the payload size
+		payload, // Pointer to store the payload data
+		nullptr
+	);
+
+
 }
 
-void InitCanSystem()
+void Core::Can::InitCanSystem()
 {
 	// Enable the clock for the Port A, the CAN1 is on Port A
 	rcc_periph_clock_enable( RCC_GPIOA );

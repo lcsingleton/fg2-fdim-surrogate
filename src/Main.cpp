@@ -34,9 +34,12 @@ void Setup()
 
 void Loop()
 {
-	for( auto timer: allTimers )
+	while( true )
 	{
-		timer.Tick( Core::Timer::GetSysUptimeMs() );
+		for( auto timer: allTimers )
+		{
+			timer.Tick( Core::Timer::GetSysUptimeMs() );
+		}
 	}
 }
 
