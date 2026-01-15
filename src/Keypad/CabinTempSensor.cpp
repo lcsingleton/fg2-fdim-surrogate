@@ -35,18 +35,35 @@ void InitTempSensor()
 	// TODO: Confirm the correct ADC Channel
     // TODO: Configure GPIO pins for the temperature sensor
 
-	// Power on the ADC
-	adc_power_on( Adc );
 
 	// Use 12 bit resolution for ADC conversions
 	adc_set_resolution( Adc, ADC_CR1_RES_12BIT );
 
+	/*
 	// Set the ADC clock prescaler to 4
 	adc_set_prescaler( Adc, ADC_PRESCALER_4 );
 
 	// Enable the "Single Shot" conversion mode
 	// This means the ADC will perform a single conversion when requested
 	adc_set_operation_mode( Adc, ADC_MODE_SINGLE );
+	*/
+
+
+
+
+	gpio_mode_setup(GPIOA, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO1);
+	rcc_periph_clock_enable(RCC_ADC1);
+	adc_set_clk_prescale(ADC_CCR_ADCPRE_BY2);
+	adc_disable_scan_mode(ADC1);
+	adc_set_single_conversion_mode(ADC1);
+	adc_set_sample_time(ADC1, ADC_CHANNEL0, ADC_SMPR_SMP_3CYC);
+	uint8_t channels[] = ADC_CHANNEL0;
+	adc_set_regular_sequence(ADC1, 1, channels);
+	adc_set_multi_mode(ADC_CCR_MULTI_INDEPENDENT);
+	adc_power_on(ADC1);
+	adc_start_conversion_regular(ADC1);
+	while (!adc_eoc(ADC1));
+	reg16 = adc_read_regular(ADC1);
 
 	adc_set_regular_sequence( Adc, &tempSensor.adcChannel, 1 );
 
@@ -56,6 +73,9 @@ void InitTempSensor()
 	// This isn't an issue for CPU time as the ADC will be triggered by an interrupt
 	// and the CPU can do other things while waiting on the conversion
 	adc_set_sample_time( Adc, ADC_CHANNEL0, ADC_SMPR_SMP_144CYC );
+
+	// Power on the ADC
+	adc_power_on( Adc );
 }
 
 /**

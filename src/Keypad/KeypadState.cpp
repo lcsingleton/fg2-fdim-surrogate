@@ -8,6 +8,7 @@
 using namespace Keypad::KeypadState;
 using namespace Keypad::RotaryDial;
 using namespace Keypad::Buttons;
+using namespace Keypad::CabinTempSensor;
 
 enum ButtonStatus
 {
